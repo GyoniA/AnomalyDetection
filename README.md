@@ -136,6 +136,8 @@ Used by social media platforms, for example to detect fake accounts or suspiciou
 
 ## 1. Week
 
+### Progress
+
 Looked into and added comparison of different types of anomaly detection techniques  
 Found potential datasets, that can be used for the project:
 - https://www.kaggle.com/datasets/faizaniftikharjanjua/metaverse-financial-transactions-dataset
@@ -149,6 +151,11 @@ Credit card fraud datasets:
 Network anomaly detection datasets:
 - https://www.kaggle.com/datasets/kaiser14/network-anomaly-dataset?select=network_dataset_labeled.csv
 - https://www.kaggle.com/datasets/aymenabb/ddos-evaluation-dataset-cic-ddos2019
+
+### Next weeks goals
+- Select used dataset
+- Find a base architecture for the model
+- Test dataset with simpler methods for comparison
 
 
 
