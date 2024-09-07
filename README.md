@@ -6,11 +6,22 @@ This is my Masters Project Laboratory 2 project about anomaly detection using ma
 
 ## Statistics
 
-Simpler statistics-based approaches work well for simpler well-defined datasets  
+Statistics-based approaches work well for simpler well-defined datasets, where assumptions can be made about the data distribution (or the distribution of the data is known)  
 Some examples:
-- Set static thresholds based on past data and mark exceeding values as anomalies
+- Percentile-based detection/Set static thresholds based on past data, where the model marks exceeding values as anomalies (most basic approach)
 - Z-Score: count number of categories that deviate from their mean by a threshold and mark samples which exceed a set number of allowed deviations as anomalies
 - Covariance Matrix: build covariance matrix from past data, values that deviate from expected covariance more than an allowed threshold are marked as anomalies
+- Grubbs Test: used with normal distributions, where the model marks samples that deviate from the normal distribution more than a threshold as outliers
+
+Advantages:
+- Easy to implement
+- Works well when data follows a known distribution
+
+Disadvantages:
+- Requires assumptions about the data distribution
+- Doesn't work well for non-linear/high-dimensional data
+
+Used mostly by financial institutions or healthcare providers
 
 ## Machine Learning
 
@@ -18,20 +29,48 @@ Use of machine learning is better for complex, large and variable datasets. The 
 
 ### Supervised Learning
 
-Has access to labeled data of normal and anomalous examples
+Has access to labeled data of normal and anomalous examples  
 Some examples:
 - K-nearest neighbors
 - Linear/Polynomial regression
 - Decision trees
+- Random Forests
+- Support Vector Machines
+- Gradient Boosting
+- Neural Networks
+
+Advantages:
+- Can be used for a wide range of datasets
+- Can learn complex relationships between features
+- Performs well when provided with large enough labeled data
+
+Disadvantages:
+- Requires labeled data, which may be expensive to obtain
+- Can struggle with rare anomalies that were not seen during training
+
+Used when labeled data is available, for example transaction fraud detection
 
 ### Unsupervised Learning
 
-When there is no access to labeled data, models find their own relations to determine anomalies
+When there is no access to labeled data, models find their own relations to determine anomalies  
 Some examples:
 - K means clustering
-- Autoencoders
+- DBSCAN (Density-Based Spatial Clustering)
 - Isolation forest
 - Local Outlier Factor
+- Autoencoders (deep learning)
+
+Advantages:
+- Doesn't require labeled data
+- Can be used for a wide range of datasets
+- Can learn complex relationships between features
+- Can detect novel anomalies
+
+Disadvantages:
+- Usually not as accurate as supervised learning
+- Can be harder to train
+
+Used when labeled data is not available, for example network anomaly detection
 
 ### Semi-supervised Learning
 
@@ -41,7 +80,56 @@ Usually less accurate than supervised learning, but can be useful in cases where
 
 ### Deep learning
 
-Artificial neural networks with a large number of layers can be useful for identifying anomalies in complex datasets, where other methods could not work well enough
+Artificial neural networks with a large number of layers can be useful for identifying anomalies in complex datasets, where other methods could not work well enough  
+Some examples:
+- Autoencoders
+- Generative Adversarial Networks
+
+Advantages:
+- Can learn complex/high-dimensional relationships between features
+- Can detect novel anomalies
+- Can be used for a wide range of datasets that can be very large
+
+Disadvantages:
+- Can be harder to train and interpret
+- Can be computationally expensive
+- Requires a lot of data to train
+
+Used for complex/high-dimensional datasets, for example when working with images
+
+## Time Series based
+
+Time series based approaches focus on patters over time, where anomalies are defined as deviations from the normal patterns, such as spikes or drops in the data  
+Some examples:
+- Autoregressive Integrated Moving Average (ARIMA)
+- Exponential Smoothing (ETS)
+- LSTM (Long Short Term Memory) based models
+
+Advantages:
+- Effective at detecting seasonal or cyclical patterns
+
+Disadvantages:
+- Sensitive to seasonal patterns
+
+Used for time series data, for example power consumption or network traffic
+
+## Graph based
+
+Graph based methods detect anomalies by analyzing the relationships and interactions between entities, often modeled as a graph  
+Some examples:
+- Graph Convolutional Networks (GCN)
+- PageRank
+- Random Walks
+
+Advantages:
+- Can detect complex relationships between entities
+- Can capture both local and global patterns
+
+Disadvantages:
+- Can be computationally expensive
+- Requires well structured data
+
+Used by social media platforms, for example to detect fake accounts or suspicious behavior
 
 
 # Progress Report
@@ -63,5 +151,8 @@ Looked into and added comparison of different types of anomaly detection techniq
 
 
 ## Sources
-
-https://medium.com/@reza.shokrzad/6-pivotal-anomaly-detection-methods-from-foundations-to-2023s-best-practices-5f037b530ae6
+[comment]: <> (TODO: Add better citations)
+- https://medium.com/@reza.shokrzad/6-pivotal-anomaly-detection-methods-from-foundations-to-2023s-best-practices-5f037b530ae6
+- https://arxiv.org/abs/1901.03407
+- https://www.sciencedirect.com/science/article/abs/pii/S1084804515002891
+- https://link.springer.com/article/10.1007/s40747-024-01446-8
