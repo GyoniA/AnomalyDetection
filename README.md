@@ -225,6 +225,14 @@ PR + ROC Curves:
 
 ![PR+Roc.png](images/PRAndRoc.png)
 
+### Next week's goals
+- Improve model parameters
+- Explain the results
+- Add an initial Deep Learning model and compare it with the others
+- Maybe try another dataset
+- Separate data reading and model training into separate files
+
+
 
 
 
