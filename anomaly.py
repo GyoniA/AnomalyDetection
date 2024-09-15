@@ -44,6 +44,7 @@ def process_dates(df):
 
 # Process 'dob' column (convert date of birth to useful numerical features)
 # We'll extract year, month and day from the date to get more usable information
+# Format: YYYY-MM-DD
 def process_dob(df):
     df['dob'] = pd.to_datetime(df['dob'], format='%Y-%m-%d')
     df['dob_year'] = df['dob'].dt.year
@@ -145,19 +146,19 @@ print("\n--- Evaluation Results ---\n")
 
 # Isolation Forest evaluation
 print("Isolation Forest:")
-print(classification_report(y_test, pred_if))
+print(classification_report(y_test, pred_if, zero_division=0))
 
 # Local Outlier Factor evaluation
 print("Local Outlier Factor:")
-print(classification_report(y_test, pred_lof))
+print(classification_report(y_test, pred_lof, zero_division=0))
 
 # One-Class SVM evaluation
 print("One-Class SVM:")
-print(classification_report(y_test, pred_ocsvm))
+print(classification_report(y_test, pred_ocsvm, zero_division=0))
 
 # K-Means evaluation
 print("K-Means:")
-print(classification_report(y_test, pred_kmeans))
+print(classification_report(y_test, pred_kmeans, zero_division=0))
 
 # Visualize the predictions from each model
 plt.figure(figsize=(12, 10))
