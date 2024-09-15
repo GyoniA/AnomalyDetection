@@ -152,10 +152,20 @@ Network anomaly detection datasets:
 - https://www.kaggle.com/datasets/kaiser14/network-anomaly-dataset?select=network_dataset_labeled.csv
 - https://www.kaggle.com/datasets/aymenabb/ddos-evaluation-dataset-cic-ddos2019
 
-### Next weeks goals
+### Next week's goals
 - Select used dataset
 - Find a base architecture for the model
 - Test dataset with simpler methods for comparison
+
+## 2. Week
+
+### Progress
+
+Found more credit card fraud datasets, this one has labeled columns:
+- https://www.kaggle.com/datasets/priyamchoksi/credit-card-transactions-dataset/data
+
+And this one has a lot of recent data, but no labeled columns:
+- https://www.kaggle.com/datasets/nelgiriyewithana/credit-card-fraud-detection-dataset-2023
 
 
 
