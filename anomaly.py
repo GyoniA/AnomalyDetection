@@ -100,7 +100,7 @@ ocsvm.fit(X_train_scaled)
 pred_ocsvm = ocsvm.predict(X_test_scaled)
 pred_ocsvm = np.where(pred_ocsvm == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 
-# 4. K-Means
+# 4. K-Means clustering
 print("\nTraining K-Means...")
 kmeans = KMeans(n_clusters=2, random_state=0)
 kmeans.fit(X_train_scaled)
@@ -124,6 +124,10 @@ print(classification_report(y_test, pred_lof))
 print("One-Class SVM:")
 print(classification_report(y_test, pred_ocsvm))
 
+# K-Means evaluation
+print("K-Means:")
+print(classification_report(y_test, pred_kmeans))
+
 # Visualize the predictions from each model
 plt.figure(figsize=(12, 6))
 
@@ -138,6 +142,10 @@ plt.title("LOF Predictions")
 plt.subplot(1, 3, 3)
 plt.hist(pred_ocsvm, bins=2)
 plt.title("One-Class SVM Predictions")
+
+plt.subplot(1, 3, 4)
+plt.hist(pred_kmeans, bins=2)
+plt.title("K-Means Predictions")
 
 plt.tight_layout()
 plt.show()
