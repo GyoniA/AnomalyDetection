@@ -169,8 +169,61 @@ And this one has a lot of recent data, but no labeled columns:
 
 Added a comparison of the results of 4 different models on the labeled column credit card transaction dataset, I used Isolation Forest, Local Outlier Factor, One-Class SVM and K-Means clustering.
 
+Evaluation Results: in Table format
+
+Isolation Forest:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.97   | 0.98     | 553574  |
+| 1.0          | 0.02      | 0.16   | 0.04     | 2145    |
+| accuracy     |           |        | 0.97     | 555719  |
+| macro avg    | 0.51      | 0.57   | 0.51     | 555719  |
+| weighted avg | 0.99      | 0.97   | 0.98     | 555719  |
+
+![covariance matrix](images/IFcm.png)
 
 
+
+Local Outlier Factor:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.79      | 0.00   | 0.00     | 553574  |
+| 1.0          | 0.00      | 0.85   | 0.01     | 2145    |
+| accuracy     |           |        | 0.01     | 555719  |
+| macro avg    | 0.39      | 0.43   | 0.01     | 555719  |
+| weighted avg | 0.78      | 0.01   | 0.00     | 555719  |
+
+![covariance matrix](images/LOFcm.png)
+
+One-Class SVM:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.07   | 0.12     | 553574  |
+| 1.0          | 0.00      | 0.98   | 0.01     | 2145    |
+| accuracy     |           |        | 0.07     | 555719  |
+| macro avg    | 0.50      | 0.52   | 0.07     | 555719  |
+| weighted avg | 1.00      | 0.07   | 0.12     | 555719  |
+
+![covariance matrix](images/OCSVMcm.png)
+
+K-Means:  
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.54   | 0.70     | 553574  |
+| 1.0          | 0.00      | 0.46   | 0.01     | 2145    |
+| accuracy     |           |        | 0.54     | 555719  |
+| macro avg    | 0.50      | 0.50   | 0.35     | 555719  |
+| weighted avg | 0.99      | 0.54   | 0.70     | 555719  |
+
+![covariance matrix](images/KMcm.png)
+
+PR + ROC Curves:
+
+![PR+Roc.png](images/PRAndRoc.png)
 
 
 
