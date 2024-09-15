@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pandas as pd
 import numpy as np
+from sklearn.cluster import KMeans
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.svm import OneClassSVM
@@ -98,6 +99,13 @@ ocsvm = OneClassSVM(nu=0.02, kernel='rbf', gamma='scale')
 ocsvm.fit(X_train_scaled)
 pred_ocsvm = ocsvm.predict(X_test_scaled)
 pred_ocsvm = np.where(pred_ocsvm == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
+
+# 4. K-Means
+print("\nTraining K-Means...")
+kmeans = KMeans(n_clusters=2, random_state=0)
+kmeans.fit(X_train_scaled)
+pred_kmeans = kmeans.predict(X_test_scaled)
+pred_kmeans = np.where(pred_kmeans == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 
 print(f"Training and testing completed in {(datetime.now() - start_time).seconds} seconds")
 
