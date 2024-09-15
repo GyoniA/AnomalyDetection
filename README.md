@@ -167,6 +167,8 @@ Found more credit card fraud datasets, this one has labeled columns:
 And this one has a lot of recent data, but no labeled columns:
 - https://www.kaggle.com/datasets/nelgiriyewithana/credit-card-fraud-detection-dataset-2023
 
+I added a comparison of the results of 4 different models on the labeled column credit card transaction dataset, I used Isolation Forest, Local Outlier Factor, One-Class SVM and K-Means clustering.
+
 
 
 
