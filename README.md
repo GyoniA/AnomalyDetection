@@ -162,7 +162,7 @@ Network anomaly detection datasets:
 ### Progress
 
 Found more credit card fraud datasets, this one has labeled columns:
-- https://www.kaggle.com/datasets/priyamchoksi/credit-card-transactions-dataset/data
+- https://huggingface.co/datasets/pointe77/credit-card-transaction/tree/main
 
 And this one has a lot of recent data, but no labeled columns:
 - https://www.kaggle.com/datasets/nelgiriyewithana/credit-card-fraud-detection-dataset-2023
