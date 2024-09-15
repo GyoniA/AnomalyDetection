@@ -8,7 +8,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.svm import OneClassSVM
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, ConfusionMatrixDisplay, precision_recall_curve, roc_curve, auc
 import matplotlib.pyplot as plt
 
 # Load the train and test datasets
@@ -20,12 +20,12 @@ test_path = 'data/pointe77/credit-card-transaction/credit_card_transaction_test.
 train_data = pd.read_csv(train_path)
 test_data = pd.read_csv(test_path)
 
-# Limit training/testing data to 100,000 rows, to speed up training during development
-train_data = train_data.head(100000)
-test_data = test_data.head(100000)
+# Limit training/testing data to 400,000 rows, to speed up training during development
+train_data = train_data.head(800000)
+test_data = test_data.head(800000)
 
-# Drop unnecessary columns
-drop_columns = ['Unnamed: 0', 'cc_num', 'trans_num', 'first', 'last', 'street'] # TODO: Re- street, first and last name columns
+# Drop unnecessary columns # TODO: Re-add street, first and last name columns
+drop_columns = ['Unnamed: 0', 'cc_num', 'trans_num', 'first', 'last', 'street']
 train_data = train_data.drop(columns=drop_columns)
 test_data = test_data.drop(columns=drop_columns)
 
@@ -115,7 +115,7 @@ start_time = datetime.now()
 
 # 2. Local Outlier Factor
 print("\nTraining Local Outlier Factor...")
-lof = LocalOutlierFactor(contamination=0.02, novelty=True)
+lof = LocalOutlierFactor(contamination="auto", novelty=True, n_neighbors=10)
 lof.fit(X_train_scaled)
 print(f"LOF training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_lof = lof.predict(X_test_scaled)
@@ -125,7 +125,7 @@ start_time = datetime.now()
 
 # 3. One-Class SVM
 print("\nTraining One-Class SVM...")
-ocsvm = OneClassSVM(nu=0.02, kernel='rbf', gamma='scale')
+ocsvm = OneClassSVM(nu=0.005, kernel='rbf', gamma='scale')
 ocsvm.fit(X_train_scaled)
 print(f"OCSVM training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_ocsvm = ocsvm.predict(X_test_scaled)
@@ -141,45 +141,64 @@ print(f"K-Means training completed in {(datetime.now() - start_time).seconds} se
 pred_kmeans = kmeans.predict(X_test_scaled)
 pred_kmeans = np.where(pred_kmeans == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 
-# Evaluate the models on the test set
 print("\n--- Evaluation Results ---\n")
 
 # Isolation Forest evaluation
 print("Isolation Forest:")
-print(classification_report(y_test, pred_if, zero_division=0))
+print(classification_report(y_test, pred_if))
+cm_if = ConfusionMatrixDisplay.from_predictions(y_test, pred_if, display_labels=["Non-Fraud", "Fraud"])
+plt.title("Isolation Forest Confusion Matrix")
 
 # Local Outlier Factor evaluation
 print("Local Outlier Factor:")
-print(classification_report(y_test, pred_lof, zero_division=0))
+print(classification_report(y_test, pred_lof))
+cm_lof = ConfusionMatrixDisplay.from_predictions(y_test, pred_lof, display_labels=["Non-Fraud", "Fraud"])
+plt.title("LOF Confusion Matrix")
 
 # One-Class SVM evaluation
 print("One-Class SVM:")
-print(classification_report(y_test, pred_ocsvm, zero_division=0))
+print(classification_report(y_test, pred_ocsvm))
+cm_ocsvm = ConfusionMatrixDisplay.from_predictions(y_test, pred_ocsvm, display_labels=["Non-Fraud", "Fraud"])
+plt.title("One-Class SVM Confusion Matrix")
 
 # K-Means evaluation
 print("K-Means:")
-print(classification_report(y_test, pred_kmeans, zero_division=0))
+print(classification_report(y_test, pred_kmeans))
+cm_kmeans = ConfusionMatrixDisplay.from_predictions(y_test, pred_kmeans, display_labels=["Non-Fraud", "Fraud"])
+plt.title("K-Means Confusion Matrix")
 
-# Visualize the predictions from each model
-plt.figure(figsize=(12, 10))
+plt.show()
 
+# Function to plot Precision-Recall curves
+def plot_precision_recall(y_tests, pred, model_name):
+    precision, recall, _ = precision_recall_curve(y_tests, pred)
+    plt.plot(recall, precision, marker='.', label=model_name)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title(f'{model_name} Precision-Recall Curve')
 
-# Set up a 2x2 grid for 4 plots
-plt.subplot(2, 2, 1)
-plt.hist(pred_if, bins=2)
-plt.title("Isolation Forest Predictions")
+# ROC Curve
+def plot_roc(y_tests, pred, model_name):
+    fpr, tpr, _ = roc_curve(y_tests, pred)
+    roc_auc = auc(fpr, tpr)
+    plt.plot(fpr, tpr, label=f'{model_name} AUC = {roc_auc:.2f}')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title(f'{model_name} ROC Curve')
 
-plt.subplot(2, 2, 2)
-plt.hist(pred_lof, bins=2)
-plt.title("LOF Predictions")
-
-plt.subplot(2, 2, 3)
-plt.hist(pred_ocsvm, bins=2)
-plt.title("One-Class SVM Predictions")
-
-plt.subplot(2, 2, 4)
-plt.hist(pred_kmeans, bins=2)
-plt.title("K-Means Predictions")
-
+# Plot precision-recall and ROC for each model
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+plot_precision_recall(y_test, pred_if, 'Isolation Forest')
+plot_precision_recall(y_test, pred_lof, 'LOF')
+plot_precision_recall(y_test, pred_ocsvm, 'One-Class SVM')
+plot_precision_recall(y_test, pred_kmeans, 'K-Means')
+plt.legend()
+plt.subplot(1, 2, 2)
+plot_roc(y_test, pred_if, 'Isolation Forest')
+plot_roc(y_test, pred_lof, 'LOF')
+plot_roc(y_test, pred_ocsvm, 'One-Class SVM')
+plot_roc(y_test, pred_kmeans, 'K-Means')
+plt.legend()
 plt.tight_layout()
 plt.show()
