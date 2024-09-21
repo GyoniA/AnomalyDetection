@@ -10,5 +10,6 @@ __pycache__/
 # Ignore other typical Python and project-specific files
 .DS_Store
 # Ignore data files
-data/
-models/
+data/**/*.csv
+models/**/*.pkl
+models/**/*.zip
