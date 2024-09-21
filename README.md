@@ -179,24 +179,22 @@ Isolation Forest:
 |              | precision | recall | f1-score | support |
 |--------------|-----------|--------|----------|---------|
 | 0.0          | 1.00      | 0.97   | 0.98     | 553574  |
-| 1.0          | 0.02      | 0.16   | 0.04     | 2145    |
-| accuracy     |           |        | 0.97     | 555719  |
-| macro avg    | 0.51      | 0.57   | 0.51     | 555719  |
-| weighted avg | 0.99      | 0.97   | 0.98     | 555719  |
+| 1.0          | 0.02      | 0.21   | 0.04     | 2145    |
+| accuracy     |           |        | 0.96     | 555719  |
+| macro avg    | 0.51      | 0.59   | 0.51     | 555719  |
+| weighted avg | 0.99      | 0.96   | 0.98     | 555719  |
 
 ![covariance matrix](images/IFcm.png)
-
-
 
 Local Outlier Factor:
 
 |              | precision | recall | f1-score | support |
 |--------------|-----------|--------|----------|---------|
-| 0.0          | 0.79      | 0.00   | 0.00     | 553574  |
-| 1.0          | 0.00      | 0.85   | 0.01     | 2145    |
-| accuracy     |           |        | 0.01     | 555719  |
-| macro avg    | 0.39      | 0.43   | 0.01     | 555719  |
-| weighted avg | 0.78      | 0.01   | 0.00     | 555719  |
+| 0.0          | 1.00      | 0.63   | 0.77     | 553574  |
+| 1.0          | 0.00      | 0.24   | 0.00     | 2145    |
+| accuracy     |           |        | 0.63     | 555719  |
+| macro avg    | 0.50      | 0.44   | 0.39     | 555719  |
+| weighted avg | 0.99      | 0.63   | 0.77     | 555719  |
 
 ![covariance matrix](images/LOFcm.png)
 
@@ -204,11 +202,11 @@ One-Class SVM:
 
 |              | precision | recall | f1-score | support |
 |--------------|-----------|--------|----------|---------|
-| 0.0          | 1.00      | 0.07   | 0.12     | 553574  |
-| 1.0          | 0.00      | 0.98   | 0.01     | 2145    |
-| accuracy     |           |        | 0.07     | 555719  |
-| macro avg    | 0.50      | 0.52   | 0.07     | 555719  |
-| weighted avg | 1.00      | 0.07   | 0.12     | 555719  |
+| 0.0          | 1.00      | 0.85   | 0.92     | 553574  |
+| 1.0          | 0.01      | 0.32   | 0.02     | 2145    |
+| accuracy     |           |        | 0.85     | 555719  |
+| macro avg    | 0.50      | 0.58   | 0.47     | 555719  |
+| weighted avg | 0.99      | 0.85   | 0.91     | 555719  |
 
 ![covariance matrix](images/OCSVMcm.png)
 
@@ -252,7 +250,7 @@ Added model saving and loading, extracted the data loading and preprocessing int
 
 
 
-
+---
 
 ## Sources
 [comment]: <> (TODO: Add better citations)
