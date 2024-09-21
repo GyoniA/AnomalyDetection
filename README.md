@@ -131,6 +131,7 @@ Disadvantages:
 
 Used by social media platforms, for example to detect fake accounts or suspicious behavior
 
+---
 
 # Progress Report
 
@@ -156,6 +157,8 @@ Network anomaly detection datasets:
 - Select used dataset
 - Find a base architecture for the model
 - Test dataset with simpler methods for comparison
+
+---
 
 ## 2. Week
 
@@ -232,7 +235,15 @@ PR + ROC Curves:
 - Maybe try another dataset
 - Separate data reading and model training into separate files
 
+---
 
+## 3. Week
+
+### Progress
+
+Added model saving and loading, extracted the data loading and preprocessing into a separate file.
+
+### Next week's goals
 
 
 
