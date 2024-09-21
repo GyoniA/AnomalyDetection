@@ -26,11 +26,11 @@ else:
     print("\nTraining Isolation Forest...")
     isolation_forest = IsolationForest(contamination=0.02)
     isolation_forest.fit(X_train_scaled)
+    joblib.dump(isolation_forest, 'models/iso_forest.pkl')
     print(f"Isolation Forest training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_if = isolation_forest.predict(X_test_scaled)
 pred_if = np.where(pred_if == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 # Save the model
-joblib.dump(isolation_forest, 'models/iso_forest.pkl')
 
 start_time = datetime.now()
 # 2. Local Outlier Factor
@@ -43,11 +43,11 @@ else:
     print("\nTraining Local Outlier Factor...")
     lof = LocalOutlierFactor(contamination="auto", novelty=True, n_neighbors=10)
     lof.fit(X_train_scaled)
+    joblib.dump(lof, 'models/lof.pkl')
     print(f"LOF training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_lof = lof.predict(X_test_scaled)
 pred_lof = np.where(pred_lof == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 # Save the model
-joblib.dump(lof, 'models/lof.pkl')
 
 start_time = datetime.now()
 # 3. One-Class SVM
@@ -60,11 +60,11 @@ else:
     print("\nTraining One-Class SVM...")
     ocsvm = OneClassSVM(nu=0.005, kernel='rbf', gamma='scale')
     ocsvm.fit(X_train_scaled)
+    joblib.dump(ocsvm, 'models/ocsvm.pkl')
     print(f"OCSVM training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_ocsvm = ocsvm.predict(X_test_scaled)
 pred_ocsvm = np.where(pred_ocsvm == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 # Save the model
-joblib.dump(ocsvm, 'models/ocsvm.pkl')
 
 start_time = datetime.now()
 # 4. K-Means clustering
@@ -77,11 +77,11 @@ else:
     print("\nTraining K-Means...")
     kmeans = KMeans(n_clusters=2, random_state=0)
     kmeans.fit(X_train_scaled)
+    joblib.dump(kmeans, 'models/kmeans.pkl')
     print(f"K-Means training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_kmeans = kmeans.predict(X_test_scaled)
 pred_kmeans = np.where(pred_kmeans == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 # Save the model
-joblib.dump(kmeans, 'models/kmeans.pkl')
 
 print("\n--- Evaluation Results ---\n")
 
