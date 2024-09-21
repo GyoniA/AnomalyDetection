@@ -244,6 +244,7 @@ PR + ROC Curves:
 ### Progress
 
 Added model saving and loading, extracted the data loading and preprocessing into a separate file.
+Added an Autoencoder model.
 
 ### Next week's goals
 
