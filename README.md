@@ -244,10 +244,24 @@ PR + ROC Curves:
 ### Progress
 
 Added model saving and loading, extracted the data loading and preprocessing into a separate file.
-Added an Autoencoder model.
+Added an Autoencoder mode and compared it with the other models.
+
+Autoencoder:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.98   | 0.99     | 553574  |
+| 1.0          | 0.04      | 0.19   | 0.06     | 2145    |
+| accuracy     |           |        | 0.98     | 555719  |
+| macro avg    | 0.52      | 0.59   | 0.53     | 555719  |
+| weighted avg | 0.99      | 0.98   | 0.99     | 555719  |
+
+![covariance matrix](images/AEcm.png)
 
 ### Next week's goals
-
+- Improve model parameters
+- Add short explanation of comparison metrics
+- Improve Autoencoder architecture or try other deep learning models
 
 
 
