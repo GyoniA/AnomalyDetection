@@ -174,7 +174,8 @@ Added a comparison of the results of 4 different models on the labeled column cr
 
 Evaluation Results: in Table format
 
-Isolation Forest:
+Isolation Forest:  
+Train time: ~6 seconds
 
 |              | precision | recall | f1-score | support |
 |--------------|-----------|--------|----------|---------|
@@ -186,7 +187,8 @@ Isolation Forest:
 
 ![covariance matrix](images/IFcm.png)
 
-Local Outlier Factor:
+Local Outlier Factor:  
+Train time: ~1202 seconds
 
 |              | precision | recall | f1-score | support |
 |--------------|-----------|--------|----------|---------|
@@ -198,7 +200,8 @@ Local Outlier Factor:
 
 ![covariance matrix](images/LOFcm.png)
 
-One-Class SVM:
+One-Class SVM:  
+Train time: ~2067 seconds
 
 |              | precision | recall | f1-score | support |
 |--------------|-----------|--------|----------|---------|
@@ -211,6 +214,7 @@ One-Class SVM:
 ![covariance matrix](images/OCSVMcm.png)
 
 K-Means:  
+Train time: ~0 seconds
 
 |              | precision | recall | f1-score | support |
 |--------------|-----------|--------|----------|---------|
