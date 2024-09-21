@@ -91,6 +91,7 @@ else:
 pred_kmeans = kmeans.predict(X_test_scaled)
 pred_kmeans = np.where(pred_kmeans == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 
+start_time = datetime.now()
 # 5. Autoencoder
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # Define the autoencoder model
@@ -101,13 +102,13 @@ ae_model_path = 'models/autoencoder.pth'
 if os.path.exists(ae_model_path):
     print(f"\nLoading Autoencoder from {ae_model_path}...")
     autoencoder_model.load_state_dict(torch.load(ae_model_path, map_location=device))
-    print(f"Autoencoder model loaded from {ae_model_path}")
+    print(f"Autoencoder model loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     # Train the model if it's not already saved
     print("\nTraining Autoencoder...")
-    autoencoder_model = ae.train_autoencoder(autoencoder_model, train_loader, device, epochs=20, lr=0.001)
+    autoencoder_model = ae.train_autoencoder(autoencoder_model, train_loader, device, epochs=10, lr=0.001)
     torch.save(autoencoder_model.state_dict(), ae_model_path)
-    print(f"Autoencoder model weights saved to {ae_model_path}")
+    print(f"Autoencoder model training completed in {(datetime.now() - start_time).seconds} seconds, weights saved to {ae_model_path}")
 
 # Get reconstruction error on the test data
 reconstruction_error = ae.get_reconstruction_error(autoencoder_model, test_loader, device)
