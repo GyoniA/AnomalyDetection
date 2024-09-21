@@ -31,7 +31,7 @@ def process_dob(df):
     return df
 
 
-def load_pointe77_data():
+def load_pointe77_data(drop_string_columns=True):
     # Load the train and test datasets
     start_time = datetime.now()
     print("Loading datasets...")
@@ -45,8 +45,11 @@ def load_pointe77_data():
     # train_data = train_data.head(800000)
     # test_data = test_data.head(800000)
 
-    # Drop unnecessary columns # TODO: Re-add street, first and last name columns
-    drop_columns = ['Unnamed: 0', 'cc_num', 'trans_num', 'first', 'last', 'street']
+    # Drop unnecessary columns
+    if drop_string_columns:
+        drop_columns = ['Unnamed: 0', 'cc_num', 'trans_num', 'first', 'last', 'street']
+    else:
+        drop_columns = ['Unnamed: 0', 'cc_num', 'trans_num']
     train_data = train_data.drop(columns=drop_columns)
     test_data = test_data.drop(columns=drop_columns)
 
