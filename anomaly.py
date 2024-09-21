@@ -18,66 +18,71 @@ start_time = datetime.now()
 # Train and test anomaly detection models
 # 1. Isolation Forest
 # Check if the model has already been trained
-if os.path.exists('models/iso_forest.pkl'):
-    print("\nLoading Isolation Forest from models/iso_forest.pkl...")
-    isolation_forest = joblib.load('models/iso_forest.pkl')
+ISOFOREST_model_path = 'models/iso_forest.pkl'
+if os.path.exists(ISOFOREST_model_path):
+    print(f"\nLoading Isolation Forest from {ISOFOREST_model_path}...")
+    isolation_forest = joblib.load(ISOFOREST_model_path)
     print(f"Isolation Forest loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining Isolation Forest...")
     isolation_forest = IsolationForest(contamination=0.02)
     isolation_forest.fit(X_train_scaled)
-    joblib.dump(isolation_forest, 'models/iso_forest.pkl')
+    # Save the model
+    joblib.dump(isolation_forest, ISOFOREST_model_path)
     print(f"Isolation Forest training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_if = isolation_forest.predict(X_test_scaled)
 pred_if = np.where(pred_if == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
-# Save the model
 
 start_time = datetime.now()
 # 2. Local Outlier Factor
 # Check if the model has already been trained
-if os.path.exists('models/lof.pkl'):
-    print("\nLoading Local Outlier Factor from models/lof.pkl...")
-    lof = joblib.load('models/lof.pkl')
+LOF_model_path = 'models/lof.pkl'
+if os.path.exists(LOF_model_path):
+    print(f"\nLoading Local Outlier Factor from {LOF_model_path}...")
+    lof = joblib.load(LOF_model_path)
     print(f"LOF loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining Local Outlier Factor...")
     lof = LocalOutlierFactor(contamination="auto", novelty=True, n_neighbors=10)
     lof.fit(X_train_scaled)
-    joblib.dump(lof, 'models/lof.pkl')
+    # Save the model
+    joblib.dump(lof, LOF_model_path)
     print(f"LOF training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_lof = lof.predict(X_test_scaled)
 pred_lof = np.where(pred_lof == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
-# Save the model
 
 start_time = datetime.now()
 # 3. One-Class SVM
 # Check if the model has already been trained
-if os.path.exists('models/ocsvm.pkl'):
-    print("\nLoading One-Class SVM from models/ocsvm.pkl...")
-    ocsvm = joblib.load('models/ocsvm.pkl')
+OCSVM_model_path = 'models/ocsvm.pkl'
+if os.path.exists(OCSVM_model_path):
+    print(f"\nLoading One-Class SVM from {OCSVM_model_path}...")
+    ocsvm = joblib.load(OCSVM_model_path)
     print(f"OCSVM loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining One-Class SVM...")
     ocsvm = OneClassSVM(nu=0.005, kernel='rbf', gamma='scale')
     ocsvm.fit(X_train_scaled)
-    joblib.dump(ocsvm, 'models/ocsvm.pkl')
+    # Save the model
+    joblib.dump(ocsvm, OCSVM_model_path)
     print(f"OCSVM training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_ocsvm = ocsvm.predict(X_test_scaled)
 pred_ocsvm = np.where(pred_ocsvm == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
-# Save the model
 
 start_time = datetime.now()
 # 4. K-Means clustering
 # Check if the model has already been trained
-if os.path.exists('models/kmeans.pkl'):
-    print("\nLoading K-Means from models/kmeans.pkl...")
-    kmeans = joblib.load('models/kmeans.pkl')
+KMEANS_model_path = 'models/kmeans.pkl'
+if os.path.exists(KMEANS_model_path):
+    print(f"\nLoading K-Means from {KMEANS_model_path}...")
+    kmeans = joblib.load(KMEANS_model_path)
     print(f"K-Means loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining K-Means...")
     kmeans = KMeans(n_clusters=2, random_state=0)
     kmeans.fit(X_train_scaled)
-    joblib.dump(kmeans, 'models/kmeans.pkl')
+    # Save the model
+    joblib.dump(kmeans, KMEANS_model_path)
     print(f"K-Means training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_kmeans = kmeans.predict(X_test_scaled)
 pred_kmeans = np.where(pred_kmeans == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
