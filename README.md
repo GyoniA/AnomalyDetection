@@ -262,6 +262,7 @@ Autoencoder:
 - Improve model parameters
 - Add short explanation of comparison metrics
 - Improve Autoencoder architecture or try other deep learning models
+- Extract paths to a config file
 
 
 
