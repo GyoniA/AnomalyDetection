@@ -6,10 +6,12 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 
 
-# Process 'trans_date_trans_time' column (convert date to useful numerical features)
-# We'll extract month, day, hour minute second from the date to get more usable information
-# Format: YYYY-MM-DD HH:MM:SS
 def process_dates(df):
+    """
+    Process the 'trans_date_trans_time' column (convert date to useful numerical features)
+    """
+    # We'll extract month, day, hour minute second from the date to get more usable information
+    # Format: YYYY-MM-DD HH:MM:SS
     df['trans_date_trans_time'] = pd.to_datetime(df['trans_date_trans_time'], format='%Y-%m-%d %H:%M:%S')
     df['month'] = df['trans_date_trans_time'].dt.month
     df['day'] = df['trans_date_trans_time'].dt.day
@@ -20,10 +22,12 @@ def process_dates(df):
     return df
 
 
-# Process 'dob' column (convert date of birth to useful numerical features)
-# We'll extract year, month and day from the date to get more usable information
-# Format: YYYY-MM-DD
 def process_dob(df):
+    """
+    Process the 'dob' column (convert date of birth to useful numerical features)
+    """
+    # We'll extract year, month and day from the date to get more usable information
+    # Format: YYYY-MM-DD
     df['dob'] = pd.to_datetime(df['dob'], format='%Y-%m-%d')
     df['dob_year'] = df['dob'].dt.year
     df['dob_month'] = df['dob'].dt.month
@@ -31,7 +35,12 @@ def process_dob(df):
     return df
 
 
-def load_pointe77_data(drop_string_columns=True):
+def load_pointe77_data(drop_string_columns=True, limit=None):
+    """
+    Load the 'credit-card-transaction' dataset from 'pointe77'
+    @param drop_string_columns: Drop columns that have string values
+    @param limit: Limit the number of rows to speed up training during development
+    """
     # Load the train and test datasets
     start_time = datetime.now()
     print("Loading datasets...")
@@ -41,9 +50,10 @@ def load_pointe77_data(drop_string_columns=True):
     train_data = pd.read_csv(train_path)
     test_data = pd.read_csv(test_path)
 
-    # Limit training/testing data to 800,000 rows, to speed up training during development
-    # train_data = train_data.head(800000)
-    # test_data = test_data.head(800000)
+    if limit:
+        # Limit training/testing data, to speed up training during development
+        train_data = train_data.head(limit)
+        test_data = test_data.head(limit)
 
     # Drop unnecessary columns
     if drop_string_columns:

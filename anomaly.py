@@ -116,16 +116,20 @@ plt.title("K-Means Confusion Matrix")
 
 plt.show()
 
-# Function to plot Precision-Recall curves
 def plot_precision_recall(y_tests, pred, model_name):
+    """
+    Plot Precision-Recall curves
+    """
     precision, recall, _ = precision_recall_curve(y_tests, pred)
     plt.plot(recall, precision, marker='.', label=model_name)
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     plt.title(f'{model_name} Precision-Recall Curve')
 
-# ROC Curve
 def plot_roc(y_tests, pred, model_name):
+    """
+    Plot ROC curves
+    """
     fpr, tpr, _ = roc_curve(y_tests, pred)
     roc_auc = auc(fpr, tpr)
     plt.plot(fpr, tpr, label=f'{model_name} AUC = {roc_auc:.2f}')
