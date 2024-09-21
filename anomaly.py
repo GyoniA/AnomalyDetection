@@ -21,6 +21,7 @@ start_time = datetime.now()
 if os.path.exists('models/iso_forest.pkl'):
     print("\nLoading Isolation Forest from models/iso_forest.pkl...")
     isolation_forest = joblib.load('models/iso_forest.pkl')
+    print(f"Isolation Forest loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining Isolation Forest...")
     isolation_forest = IsolationForest(contamination=0.02)
@@ -37,6 +38,7 @@ start_time = datetime.now()
 if os.path.exists('models/lof.pkl'):
     print("\nLoading Local Outlier Factor from models/lof.pkl...")
     lof = joblib.load('models/lof.pkl')
+    print(f"LOF loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining Local Outlier Factor...")
     lof = LocalOutlierFactor(contamination="auto", novelty=True, n_neighbors=10)
@@ -53,6 +55,7 @@ start_time = datetime.now()
 if os.path.exists('models/ocsvm.pkl'):
     print("\nLoading One-Class SVM from models/ocsvm.pkl...")
     ocsvm = joblib.load('models/ocsvm.pkl')
+    print(f"OCSVM loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining One-Class SVM...")
     ocsvm = OneClassSVM(nu=0.005, kernel='rbf', gamma='scale')
@@ -69,6 +72,7 @@ start_time = datetime.now()
 if os.path.exists('models/kmeans.pkl'):
     print("\nLoading K-Means from models/kmeans.pkl...")
     kmeans = joblib.load('models/kmeans.pkl')
+    print(f"K-Means loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining K-Means...")
     kmeans = KMeans(n_clusters=2, random_state=0)
