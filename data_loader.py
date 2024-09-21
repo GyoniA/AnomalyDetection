@@ -2,8 +2,10 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
+import torch
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
+from torch.utils.data import TensorDataset, DataLoader
 
 
 def process_dates(df):
@@ -38,8 +40,9 @@ def process_dob(df):
 def load_pointe77_data(drop_string_columns=True, limit=None):
     """
     Load the 'credit-card-transaction' dataset from 'pointe77'
-    @param drop_string_columns: Drop columns that have string values
-    @param limit: Limit the number of rows to speed up training during development
+
+    :param drop_string_columns: Drop columns that have string values
+    :param limit: Limit the number of rows to speed up training during development
     """
     # Load the train and test datasets
     start_time = datetime.now()
@@ -111,3 +114,19 @@ def load_pointe77_data(drop_string_columns=True, limit=None):
     x_test_scaled = scaler.transform(x_test)
     print(f"Data loading and preprocessing completed in {(datetime.now() - start_time).seconds} seconds")
     return x_train_scaled, x_test_scaled, y_train, y_test
+
+
+def create_dataloader(x_train, x_test, batch_size=64):
+    """
+    Convert NumPy arrays to PyTorch tensors and then to DataLoaders
+    """
+    x_train_tensor = torch.tensor(x_train, dtype=torch.float32)
+    x_test_tensor = torch.tensor(x_test, dtype=torch.float32)
+
+    train_dataset = TensorDataset(x_train_tensor)
+    test_dataset = TensorDataset(x_test_tensor)
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
+    return train_loader, test_loader
