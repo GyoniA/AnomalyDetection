@@ -133,6 +133,90 @@ Used by social media platforms, for example to detect fake accounts or suspiciou
 
 ---
 
+# Results of comparison
+
+## On labeled dataset
+
+Used dataset: https://huggingface.co/datasets/pointe77/credit-card-transaction/tree/main
+
+### Isolation Forest
+Train time: ~6 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.97   | 0.98     | 553574  |
+| 1.0          | 0.02      | 0.21   | 0.04     | 2145    |
+| accuracy     |           |        | 0.96     | 555719  |
+| macro avg    | 0.51      | 0.59   | 0.51     | 555719  |
+| weighted avg | 0.99      | 0.96   | 0.98     | 555719  |
+
+![covariance matrix](images/IFcm.png)
+
+---
+
+### Local Outlier Factor
+Train time: ~1202 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.63   | 0.77     | 553574  |
+| 1.0          | 0.00      | 0.24   | 0.00     | 2145    |
+| accuracy     |           |        | 0.63     | 555719  |
+| macro avg    | 0.50      | 0.44   | 0.39     | 555719  |
+| weighted avg | 0.99      | 0.63   | 0.77     | 555719  |
+
+![covariance matrix](images/LOFcm.png)
+
+---
+
+### One-Class SVM
+Train time: ~2067 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.85   | 0.92     | 553574  |
+| 1.0          | 0.01      | 0.32   | 0.02     | 2145    |
+| accuracy     |           |        | 0.85     | 555719  |
+| macro avg    | 0.50      | 0.58   | 0.47     | 555719  |
+| weighted avg | 0.99      | 0.85   | 0.91     | 555719  |
+
+![covariance matrix](images/OCSVMcm.png)
+
+---
+
+### K-Means
+Train time: ~0 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.54   | 0.70     | 553574  |
+| 1.0          | 0.00      | 0.46   | 0.01     | 2145    |
+| accuracy     |           |        | 0.54     | 555719  |
+| macro avg    | 0.50      | 0.50   | 0.35     | 555719  |
+| weighted avg | 0.99      | 0.54   | 0.70     | 555719  |
+
+![covariance matrix](images/KMcm.png)
+
+---
+
+### Autoencoder
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.98   | 0.99     | 553574  |
+| 1.0          | 0.04      | 0.19   | 0.06     | 2145    |
+| accuracy     |           |        | 0.98     | 555719  |
+| macro avg    | 0.52      | 0.59   | 0.53     | 555719  |
+| weighted avg | 0.99      | 0.98   | 0.99     | 555719  |
+
+![covariance matrix](images/AEcm.png)
+
+---
+
+### PR + ROC Curves
+
+![PR+Roc.png](images/PRAndRoc.png)
+
 # Progress Report
 
 ## 1. Week
@@ -172,64 +256,6 @@ And this one has a lot of recent data, but no labeled columns:
 
 Added a comparison of the results of 4 different models on the labeled column credit card transaction dataset, I used Isolation Forest, Local Outlier Factor, One-Class SVM and K-Means clustering.
 
-Evaluation Results: in Table format
-
-Isolation Forest:  
-Train time: ~6 seconds
-
-|              | precision | recall | f1-score | support |
-|--------------|-----------|--------|----------|---------|
-| 0.0          | 1.00      | 0.97   | 0.98     | 553574  |
-| 1.0          | 0.02      | 0.21   | 0.04     | 2145    |
-| accuracy     |           |        | 0.96     | 555719  |
-| macro avg    | 0.51      | 0.59   | 0.51     | 555719  |
-| weighted avg | 0.99      | 0.96   | 0.98     | 555719  |
-
-![covariance matrix](images/IFcm.png)
-
-Local Outlier Factor:  
-Train time: ~1202 seconds
-
-|              | precision | recall | f1-score | support |
-|--------------|-----------|--------|----------|---------|
-| 0.0          | 1.00      | 0.63   | 0.77     | 553574  |
-| 1.0          | 0.00      | 0.24   | 0.00     | 2145    |
-| accuracy     |           |        | 0.63     | 555719  |
-| macro avg    | 0.50      | 0.44   | 0.39     | 555719  |
-| weighted avg | 0.99      | 0.63   | 0.77     | 555719  |
-
-![covariance matrix](images/LOFcm.png)
-
-One-Class SVM:  
-Train time: ~2067 seconds
-
-|              | precision | recall | f1-score | support |
-|--------------|-----------|--------|----------|---------|
-| 0.0          | 1.00      | 0.85   | 0.92     | 553574  |
-| 1.0          | 0.01      | 0.32   | 0.02     | 2145    |
-| accuracy     |           |        | 0.85     | 555719  |
-| macro avg    | 0.50      | 0.58   | 0.47     | 555719  |
-| weighted avg | 0.99      | 0.85   | 0.91     | 555719  |
-
-![covariance matrix](images/OCSVMcm.png)
-
-K-Means:  
-Train time: ~0 seconds
-
-|              | precision | recall | f1-score | support |
-|--------------|-----------|--------|----------|---------|
-| 0.0          | 1.00      | 0.54   | 0.70     | 553574  |
-| 1.0          | 0.00      | 0.46   | 0.01     | 2145    |
-| accuracy     |           |        | 0.54     | 555719  |
-| macro avg    | 0.50      | 0.50   | 0.35     | 555719  |
-| weighted avg | 0.99      | 0.54   | 0.70     | 555719  |
-
-![covariance matrix](images/KMcm.png)
-
-PR + ROC Curves:
-
-![PR+Roc.png](images/PRAndRoc.png)
-
 ### Next week's goals
 - Improve model parameters
 - Explain the results
@@ -246,29 +272,19 @@ PR + ROC Curves:
 Added model saving and loading, extracted the data loading and preprocessing into a separate file.
 Added an Autoencoder mode and compared it with the other models.
 
-Autoencoder:
-
-|              | precision | recall | f1-score | support |
-|--------------|-----------|--------|----------|---------|
-| 0.0          | 1.00      | 0.98   | 0.99     | 553574  |
-| 1.0          | 0.04      | 0.19   | 0.06     | 2145    |
-| accuracy     |           |        | 0.98     | 555719  |
-| macro avg    | 0.52      | 0.59   | 0.53     | 555719  |
-| weighted avg | 0.99      | 0.98   | 0.99     | 555719  |
-
-![covariance matrix](images/AEcm.png)
-
 ### Next week's goals
 - Improve model parameters
 - Add short explanation of comparison metrics
 - Improve Autoencoder architecture or try other deep learning models
 - Extract paths to a config file
 
+---
+
 ## 4. Week
 
 ### Progress
 
-Added area under the precision-recall curve (AUPRC) to the PRC comparison plot.
+Added area under the precision-recall curve (AUPRC) metric to the PRC comparison plot, as this works better for imbalanced datasets.[[1]](#1)
 
 
 
@@ -282,9 +298,11 @@ Added area under the precision-recall curve (AUPRC) to the PRC comparison plot.
 
 ---
 
-## Sources
+## Sources / References
 [comment]: <> (TODO: Add better citations)
 - https://medium.com/@reza.shokrzad/6-pivotal-anomaly-detection-methods-from-foundations-to-2023s-best-practices-5f037b530ae6
 - https://arxiv.org/abs/1901.03407
 - https://www.sciencedirect.com/science/article/abs/pii/S1084804515002891
 - https://link.springer.com/article/10.1007/s40747-024-01446-8
+- <a name="1">[1]</a> J. Hancock, T. M. Khoshgoftaar and J. M. Johnson, "Informative Evaluation Metrics for Highly Imbalanced Big Data Classification," 2022 21st IEEE International Conference on Machine Learning and Applications (ICMLA), Nassau, Bahamas, 2022, pp. 1419-1426, doi: 10.1109/ICMLA55696.2022.00224. keywords: {Measurement;Insurance;Machine learning;Receivers;Big Data;Data models;Robustness;Extremely Randomized Trees;XGBoost;Class Imbalance;Big Data;Undersampling;AUC;AUPRC}
+

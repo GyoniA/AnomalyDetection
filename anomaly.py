@@ -172,7 +172,7 @@ def plot_roc(y_tests, pred, model_name):
     plt.plot(fpr, tpr, label=f'{model_name} AUC = {roc_auc:.2f}')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title(f'ROC Curve')
+    plt.title('ROC Curve')
 
 # Plot precision-recall and ROC for each model
 plt.figure(figsize=(12, 5))
