@@ -264,7 +264,17 @@ Autoencoder:
 - Improve Autoencoder architecture or try other deep learning models
 - Extract paths to a config file
 
+## 4. Week
 
+### Progress
+
+Added area under the precision-recall curve (AUPRC) to the PRC comparison plot.
+
+
+
+### Next week's goals
+
+- 
 
 
 

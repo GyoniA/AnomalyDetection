@@ -154,13 +154,14 @@ plt.show()
 
 def plot_precision_recall(y_tests, pred, model_name):
     """
-    Plot Precision-Recall curves
+    Plot Precision-Recall curves and compute AUPRC.
     """
     precision, recall, _ = precision_recall_curve(y_tests, pred)
-    plt.plot(recall, precision, marker='.', label=model_name)
+    pr_auc = auc(recall, precision)
+    plt.plot(recall, precision, marker='.', label=f'{model_name} AUPRC = {pr_auc:.2f}')
     plt.xlabel('Recall')
     plt.ylabel('Precision')
-    plt.title(f'Precision-Recall Curve')
+    plt.title('Precision-Recall Curve')
 
 def plot_roc(y_tests, pred, model_name):
     """
