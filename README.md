@@ -217,7 +217,113 @@ Train time: ~0 seconds
 
 ![PR+Roc.png](images/pointe77/PRAndRoc.png)
 
-# Progress Report
+## On anonymized credit card fraud dataset
+
+Used dataset: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data
+
+### Isolation Forest
+
+Train time: ~1 second
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.98   | 0.99     | 71108   |
+| 1.0          | 0.04      | 0.60   | 0.07     | 94      |
+| accuracy     |           |        | 0.98     | 71202   |
+| macro avg    | 0.52      | 0.79   | 0.53     | 71202   |
+| weighted avg | 1.00      | 0.98   | 0.99     | 71202   |
+
+![covariance matrix](images/mlg-ulb/IFcm.png)
+
+---
+
+### Local Outlier Factor
+
+Train time: ~42 seconds
+
+              precision    recall  f1-score   support
+
+           0       1.00      0.77      0.87     71108
+           1       0.00      0.14      0.00        94
+
+    accuracy                           0.77     71202
+   macro avg       0.50      0.45      0.44     71202
+weighted avg       1.00      0.77      0.87     71202
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.77   | 0.87     | 71108   |
+| 1.0          | 0.00      | 0.14   | 0.00     | 94      |
+| accuracy     |           |        | 0.77     | 71202   |
+| macro avg    | 0.50      | 0.45   | 0.44     | 71202   |
+| weighted avg | 1.00      | 0.77   | 0.87     | 71202   |
+
+![covariance matrix](images/mlg-ulb/LOFcm.png)
+
+---
+
+### One-Class SVM
+
+Train time: ~97 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.98   | 0.99     | 71108   |
+| 1.0          | 0.04      | 0.65   | 0.08     | 94      |
+| accuracy     |           |        | 0.98     | 71202   |
+| macro avg    | 0.52      | 0.81   | 0.54     | 71202   |
+| weighted avg | 1.00      | 0.98   | 0.99     | 71202   |
+
+![covariance matrix](images/mlg-ulb/OCSVMcm.png)
+
+---
+
+### K-Means
+
+Train time: ~0 seconds
+
+              precision    recall  f1-score   support
+
+           0       1.00      0.94      0.97     71108
+           1       0.00      0.17      0.01        94
+
+    accuracy                           0.94     71202
+   macro avg       0.50      0.56      0.49     71202
+weighted avg       1.00      0.94      0.97     71202
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.94   | 0.97     | 71108   |
+| 1.0          | 0.00      | 0.17   | 0.01     | 94      |
+| accuracy     |           |        | 0.94     | 71202   |
+| macro avg    | 0.50      | 0.56   | 0.49     | 71202   |
+| weighted avg | 1.00      | 0.94   | 0.97     | 71202   |
+
+![covariance matrix](images/mlg-ulb/KMcm.png)
+
+---
+
+### Autoencoder
+
+Train time: ~65 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.98   | 0.99     | 71108   |
+| 1.0          | 0.05      | 0.70   | 0.09     | 94      |
+| accuracy     |           |        | 0.98     | 71202   |
+| macro avg    | 0.52      | 0.84   | 0.54     | 71202   |
+| weighted avg | 1.00      | 0.98   | 0.99     | 71202   |
+
+![covariance matrix](images/mlg-ulb/AEcm.png)
+
+---
+
+### PR + ROC Curves
+
+![PR+Roc.png](images/mlg-ulb/PRAndRoc.png)
+
+---
 
 ## 1. Week
 
@@ -284,8 +390,8 @@ Added an Autoencoder mode and compared it with the other models.
 
 ### Progress
 
-Added area under the precision-recall curve (AUPRC) metric to the PRC comparison plot, as this works better for imbalanced datasets.[[1]](#1)
-
+Added area under the precision-recall curve (AUPRC) metric to the PRC comparison plot, as this works better for imbalanced datasets.[[1]](#1)  
+Added data loading and comparison for the "Credit Card Fraud Detection" dataset from mlg-ulb, as this dataset is used as a benchmark in a lot of anomaly detection papers.
 
 
 ### Next week's goals
@@ -299,10 +405,16 @@ Added area under the precision-recall curve (AUPRC) metric to the PRC comparison
 ---
 
 ## Sources / References
-[comment]: <> (TODO: Add better citations)
 - https://medium.com/@reza.shokrzad/6-pivotal-anomaly-detection-methods-from-foundations-to-2023s-best-practices-5f037b530ae6
 - https://arxiv.org/abs/1901.03407
 - https://www.sciencedirect.com/science/article/abs/pii/S1084804515002891
 - https://link.springer.com/article/10.1007/s40747-024-01446-8
-- <a name="1">[1]</a> J. Hancock, T. M. Khoshgoftaar and J. M. Johnson, "Informative Evaluation Metrics for Highly Imbalanced Big Data Classification," 2022 21st IEEE International Conference on Machine Learning and Applications (ICMLA), Nassau, Bahamas, 2022, pp. 1419-1426, doi: 10.1109/ICMLA55696.2022.00224. keywords: {Measurement;Insurance;Machine learning;Receivers;Big Data;Data models;Robustness;Extremely Randomized Trees;XGBoost;Class Imbalance;Big Data;Undersampling;AUC;AUPRC}
+- <a name="1">[1]</a> J. Hancock, T. M. Khoshgoftaar and J. M. Johnson, "Informative Evaluation Metrics for Highly Imbalanced Big Data Classification," 2022 21st IEEE International Conference on Machine Learning and Applications (ICMLA), Nassau, Bahamas, 2022, pp. 1419-1426, doi: 10.1109/ICMLA55696.2022.00224. keywords: {Measurement;Insurance;Machine learning;Receivers;Big Data;Data models;Robustness;Extremely Randomized Trees;XGBoost;Class Imbalance;Big Data;Undersampling;AUC;AUPRC}  
 
+#### List of some papers that use the "Credit Card Fraud Detection" dataset from mlg-ulb:
+[comment]: <> (TODO: Add better citations)
+- https://www.mdpi.com/2079-9292/11/4/662
+- https://www.researchgate.net/profile/Dr-Kumar-Lilhore/publication/341932015_An_Efficient_Credit_Card_Fraud_Detection_Model_Based_on_Machine_Learning_Methods/links/5ee4a477458515814a5b891e/An-Efficient-Credit-Card-Fraud-Detection-Model-Based-on-Machine-Learning-Methods.pdf
+- https://ieeexplore.ieee.org/abstract/document/8979331
+- https://ieeexplore.ieee.org/abstract/document/9651991
+- https://ieeexplore.ieee.org/abstract/document/9121114

@@ -14,11 +14,13 @@ from sklearn.svm import OneClassSVM
 import data_loader
 import auto_encoder as ae
 
-# model_path = 'models/pointe77/'
+# model_name = 'pointe77'
 # X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_pointe77_data()
 
-model_path = 'models/mlg-ulb/'
+model_name = 'mlg-ulb'
 X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data()
+
+model_path = f'models/{model_name}/'
 
 train_loader, test_loader = data_loader.create_dataloader(X_train_scaled, X_test_scaled)
 
@@ -122,30 +124,34 @@ threshold = np.percentile(reconstruction_error, 98)
 pred_ae = np.where(reconstruction_error > threshold, 1, 0)
 
 print("\n--- Evaluation Results ---\n")
-
+plot_path = f'images/{model_name}/'
 # Isolation Forest evaluation
 print("Isolation Forest:")
 print(classification_report(y_test, pred_if))
 cm_if = ConfusionMatrixDisplay.from_predictions(y_test, pred_if, display_labels=["Non-Fraud", "Fraud"])
 plt.title("Isolation Forest Confusion Matrix")
+plt.savefig(plot_path + 'IFcm.png')
 
 # Local Outlier Factor evaluation
 print("Local Outlier Factor:")
 print(classification_report(y_test, pred_lof))
 cm_lof = ConfusionMatrixDisplay.from_predictions(y_test, pred_lof, display_labels=["Non-Fraud", "Fraud"])
 plt.title("LOF Confusion Matrix")
+plt.savefig(plot_path + 'LOFcm.png')
 
 # One-Class SVM evaluation
 print("One-Class SVM:")
 print(classification_report(y_test, pred_ocsvm))
 cm_ocsvm = ConfusionMatrixDisplay.from_predictions(y_test, pred_ocsvm, display_labels=["Non-Fraud", "Fraud"])
 plt.title("One-Class SVM Confusion Matrix")
+plt.savefig(plot_path + 'OCSVMcm.png')
 
 # K-Means evaluation
 print("K-Means:")
 print(classification_report(y_test, pred_kmeans))
 cm_kmeans = ConfusionMatrixDisplay.from_predictions(y_test, pred_kmeans, display_labels=["Non-Fraud", "Fraud"])
 plt.title("K-Means Confusion Matrix")
+plt.savefig(plot_path + 'KMcm.png')
 
 
 # Autoencoder evaluation
@@ -153,27 +159,28 @@ print("Autoencoder (AE):")
 print(classification_report(y_test, pred_ae))
 cm_ae = ConfusionMatrixDisplay.from_predictions(y_test, pred_ae, display_labels=["Non-Fraud", "Fraud"])
 plt.title("Autoencoder Confusion Matrix")
+plt.savefig(plot_path + 'AEcm.png')
 
 plt.show()
 
-def plot_precision_recall(y_tests, pred, model_name):
+def plot_precision_recall(y_tests, pred, model):
     """
     Plot Precision-Recall curves and compute AUPRC.
     """
     precision, recall, _ = precision_recall_curve(y_tests, pred)
     pr_auc = auc(recall, precision)
-    plt.plot(recall, precision, marker='.', label=f'{model_name} AUPRC = {pr_auc:.2f}')
+    plt.plot(recall, precision, marker='.', label=f'{model} AUPRC = {pr_auc:.2f}')
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     plt.title('Precision-Recall Curve')
 
-def plot_roc(y_tests, pred, model_name):
+def plot_roc(y_tests, pred, model):
     """
     Plot ROC curves
     """
     fpr, tpr, _ = roc_curve(y_tests, pred)
     roc_auc = auc(fpr, tpr)
-    plt.plot(fpr, tpr, label=f'{model_name} AUC = {roc_auc:.2f}')
+    plt.plot(fpr, tpr, label=f'{model} AUC = {roc_auc:.2f}')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('ROC Curve')
@@ -195,4 +202,5 @@ plot_roc(y_test, pred_kmeans, 'K-Means')
 plot_roc(y_test, pred_ae, 'Autoencoder')
 plt.legend()
 plt.tight_layout()
+plt.savefig(plot_path + 'PRAndRoc.png')
 plt.show()
