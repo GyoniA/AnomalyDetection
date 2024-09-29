@@ -37,18 +37,19 @@ def process_dob(df):
     return df
 
 
-def load_pointe77_data(drop_string_columns=True, limit=None):
+def load_pointe77_data(drop_string_columns=True, limit=None, path='data/pointe77/credit-card-transaction/'):
     """
     Load the 'credit-card-transaction' dataset from 'pointe77'
 
     :param drop_string_columns: Drop columns that have string values
     :param limit: Limit the number of rows to speed up training during development
+    :param path: Path to the dataset files
     """
     # Load the train and test datasets
     start_time = datetime.now()
     print("Loading datasets...")
-    train_path = 'data/pointe77/credit-card-transaction/credit_card_transaction_train.csv'
-    test_path = 'data/pointe77/credit-card-transaction/credit_card_transaction_test.csv'
+    train_path = path + 'credit_card_transaction_train.csv'
+    test_path = path + 'credit_card_transaction_test.csv'
 
     train_data = pd.read_csv(train_path)
     test_data = pd.read_csv(test_path)
@@ -113,6 +114,54 @@ def load_pointe77_data(drop_string_columns=True, limit=None):
     x_train_scaled = scaler.fit_transform(x_train)
     x_test_scaled = scaler.transform(x_test)
     print(f"Data loading and preprocessing completed in {(datetime.now() - start_time).seconds} seconds")
+    return x_train_scaled, x_test_scaled, y_train, y_test
+
+
+def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', test_size=0.25):
+    """
+    Load and preprocess the "Credit Card Fraud Detection" dataset from mlg-ulb
+
+    :param csv_path: Path to the credit card dataset CSV file
+    :param test_size: Proportion of the dataset to reserve for testing (default is 0.25 for a 25% test set)
+    :return: Preprocessed training and test sets (scaled), along with labels
+    """
+    # Load the dataset
+    start_time = datetime.now()
+    print("Loading the credit card dataset...")
+
+    data = pd.read_csv(csv_path)
+
+    # Perform time-based split based on the 'Time' feature, to mirror real-world data availability
+    data = data.sort_values(by='Time').reset_index(drop=True)
+    split_index = int(len(data) * (1 - test_size))
+
+    train_data = data.iloc[:split_index]
+    test_data = data.iloc[split_index:]
+
+    # Separate features and target ('Class' is the target for fraud detection)
+    x_train = train_data.drop(columns=['Class'])
+    y_train = train_data['Class']
+
+    x_test = test_data.drop(columns=['Class'])
+    y_test = test_data['Class']
+
+    # Normalize the features (standardize to zero mean and unit variance)
+    scaler = StandardScaler()
+    x_train_scaled = scaler.fit_transform(x_train)
+    x_test_scaled = scaler.transform(x_test)
+
+    # Report distribution of anomalies in train and test sets
+    train_fraud_count = y_train.sum()
+    test_fraud_count = y_test.sum()
+
+    print(f"Data loaded and processed in {(datetime.now() - start_time).seconds} seconds.")
+    print(
+        f"Training set: {len(x_train)} samples, with {train_fraud_count} fraud cases ({100 * train_fraud_count / len(y_train):.4f}%)."
+    )
+    print(
+        f"Test set: {len(x_test)} samples, with {test_fraud_count} fraud cases ({100 * test_fraud_count / len(y_test):.4f}%)."
+    )
+
     return x_train_scaled, x_test_scaled, y_train, y_test
 
 

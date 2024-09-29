@@ -14,9 +14,11 @@ from sklearn.svm import OneClassSVM
 import data_loader
 import auto_encoder as ae
 
-model_path = 'models/pointe77/'
+# model_path = 'models/pointe77/'
+# X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_pointe77_data()
 
-X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_pointe77_data()
+model_path = 'models/mlg-ulb/'
+X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data()
 
 train_loader, test_loader = data_loader.create_dataloader(X_train_scaled, X_test_scaled)
 
