@@ -14,6 +14,8 @@ from sklearn.svm import OneClassSVM
 import data_loader
 import auto_encoder as ae
 
+model_path = 'models/pointe77/'
+
 X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_pointe77_data()
 
 train_loader, test_loader = data_loader.create_dataloader(X_train_scaled, X_test_scaled)
@@ -22,7 +24,7 @@ start_time = datetime.now()
 # Train and test anomaly detection models
 # 1. Isolation Forest
 # Check if the model has already been trained
-ISOFOREST_model_path = 'models/iso_forest.pkl'
+ISOFOREST_model_path = model_path + 'iso_forest.pkl'
 if os.path.exists(ISOFOREST_model_path):
     print(f"\nLoading Isolation Forest from {ISOFOREST_model_path}...")
     isolation_forest = joblib.load(ISOFOREST_model_path)
@@ -40,7 +42,7 @@ pred_if = np.where(pred_if == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomal
 start_time = datetime.now()
 # 2. Local Outlier Factor
 # Check if the model has already been trained
-LOF_model_path = 'models/lof.pkl'
+LOF_model_path = model_path + 'lof.pkl'
 if os.path.exists(LOF_model_path):
     print(f"\nLoading Local Outlier Factor from {LOF_model_path}...")
     lof = joblib.load(LOF_model_path)
@@ -58,7 +60,7 @@ pred_lof = np.where(pred_lof == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anom
 start_time = datetime.now()
 # 3. One-Class SVM
 # Check if the model has already been trained
-OCSVM_model_path = 'models/ocsvm.pkl'
+OCSVM_model_path = model_path + 'ocsvm.pkl'
 if os.path.exists(OCSVM_model_path):
     print(f"\nLoading One-Class SVM from {OCSVM_model_path}...")
     ocsvm = joblib.load(OCSVM_model_path)
@@ -76,7 +78,7 @@ pred_ocsvm = np.where(pred_ocsvm == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (
 start_time = datetime.now()
 # 4. K-Means clustering
 # Check if the model has already been trained
-KMEANS_model_path = 'models/kmeans.pkl'
+KMEANS_model_path = model_path + 'kmeans.pkl'
 if os.path.exists(KMEANS_model_path):
     print(f"\nLoading K-Means from {KMEANS_model_path}...")
     kmeans = joblib.load(KMEANS_model_path)
@@ -96,7 +98,7 @@ start_time = datetime.now()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # Define the autoencoder model
 autoencoder_model = ae.Autoencoder(input_dim=X_train_scaled.shape[1])
-ae_model_path = 'models/autoencoder.pth'
+ae_model_path = model_path + 'autoencoder.pth'
 
 # Load the trained model if it exists
 if os.path.exists(ae_model_path):

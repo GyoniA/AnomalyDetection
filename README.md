@@ -150,7 +150,7 @@ Train time: ~6 seconds
 | macro avg    | 0.51      | 0.59   | 0.51     | 555719  |
 | weighted avg | 0.99      | 0.96   | 0.98     | 555719  |
 
-![covariance matrix](images/IFcm.png)
+![covariance matrix](images/pointe77/IFcm.png)
 
 ---
 
@@ -165,7 +165,7 @@ Train time: ~1202 seconds
 | macro avg    | 0.50      | 0.44   | 0.39     | 555719  |
 | weighted avg | 0.99      | 0.63   | 0.77     | 555719  |
 
-![covariance matrix](images/LOFcm.png)
+![covariance matrix](images/pointe77/LOFcm.png)
 
 ---
 
@@ -180,7 +180,7 @@ Train time: ~2067 seconds
 | macro avg    | 0.50      | 0.58   | 0.47     | 555719  |
 | weighted avg | 0.99      | 0.85   | 0.91     | 555719  |
 
-![covariance matrix](images/OCSVMcm.png)
+![covariance matrix](images/pointe77/OCSVMcm.png)
 
 ---
 
@@ -195,7 +195,7 @@ Train time: ~0 seconds
 | macro avg    | 0.50      | 0.50   | 0.35     | 555719  |
 | weighted avg | 0.99      | 0.54   | 0.70     | 555719  |
 
-![covariance matrix](images/KMcm.png)
+![covariance matrix](images/pointe77/KMcm.png)
 
 ---
 
@@ -209,13 +209,13 @@ Train time: ~0 seconds
 | macro avg    | 0.52      | 0.59   | 0.53     | 555719  |
 | weighted avg | 0.99      | 0.98   | 0.99     | 555719  |
 
-![covariance matrix](images/AEcm.png)
+![covariance matrix](images/pointe77/AEcm.png)
 
 ---
 
 ### PR + ROC Curves
 
-![PR+Roc.png](images/PRAndRoc.png)
+![PR+Roc.png](images/pointe77/PRAndRoc.png)
 
 # Progress Report
 
