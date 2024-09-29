@@ -35,13 +35,13 @@ if os.path.exists(ISOFOREST_model_path):
     print(f"Isolation Forest loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining Isolation Forest...")
-    isolation_forest = IsolationForest(contamination=0.02)
+    isolation_forest = IsolationForest(contamination='auto')
     isolation_forest.fit(X_train_scaled)
     # Save the model
     joblib.dump(isolation_forest, ISOFOREST_model_path)
     print(f"Isolation Forest training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_if = isolation_forest.predict(X_test_scaled)
-pred_if = np.where(pred_if == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
+pred_if = np.where(pred_if == 1, np.array(0, dtype=pred_if.dtype), np.array(1, dtype=pred_if.dtype))  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 
 start_time = datetime.now()
 # 2. Local Outlier Factor
@@ -59,7 +59,7 @@ else:
     joblib.dump(lof, LOF_model_path)
     print(f"LOF training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_lof = lof.predict(X_test_scaled)
-pred_lof = np.where(pred_lof == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
+pred_lof = np.where(pred_lof == 1, np.array(0, dtype=pred_if.dtype), np.array(1, dtype=pred_if.dtype))  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 
 start_time = datetime.now()
 # 3. One-Class SVM
@@ -77,7 +77,7 @@ else:
     joblib.dump(ocsvm, OCSVM_model_path)
     print(f"OCSVM training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_ocsvm = ocsvm.predict(X_test_scaled)
-pred_ocsvm = np.where(pred_ocsvm == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
+pred_ocsvm = np.where(pred_ocsvm == 1, np.array(0, dtype=pred_if.dtype), np.array(1, dtype=pred_if.dtype))  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 
 start_time = datetime.now()
 # 4. K-Means clustering
@@ -95,7 +95,7 @@ else:
     joblib.dump(kmeans, KMEANS_model_path)
     print(f"K-Means training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
 pred_kmeans = kmeans.predict(X_test_scaled)
-pred_kmeans = np.where(pred_kmeans == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
+pred_kmeans = np.where(pred_kmeans == 1, np.array(0, dtype=pred_if.dtype), np.array(1, dtype=pred_if.dtype))  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
 
 start_time = datetime.now()
 # 5. Autoencoder
@@ -119,7 +119,7 @@ else:
 # Get reconstruction error on the test data
 reconstruction_error = ae.get_reconstruction_error(autoencoder_model, test_loader, device)
 # Set a threshold for anomaly detection
-threshold = np.percentile(reconstruction_error, 98)
+threshold = np.percentile(reconstruction_error, 95)
 # Get predictions based on the threshold
 pred_ae = np.where(reconstruction_error > threshold, 1, 0)
 

@@ -219,11 +219,13 @@ Train time: ~0 seconds
 
 ## On anonymized credit card fraud dataset
 
-Used dataset: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data
+Used dataset: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data  
+There are 2 versions, one with SMOTE-ENN (Synthetic Minority Over-sampling Technique + Edited Nearest Neighbors) and one without.  
+The confusion matrices are for the default model, which is the one without SMOTE-ENN. Confusion matrices for the SMOTE-ENN model are in the 'images' folder.
 
 ### Isolation Forest
 
-Train time: ~1 second
+Default Train time: ~1 second
 
 |              | precision | recall | f1-score | support |
 |--------------|-----------|--------|----------|---------|
@@ -233,22 +235,24 @@ Train time: ~1 second
 | macro avg    | 0.52      | 0.79   | 0.53     | 71202   |
 | weighted avg | 1.00      | 0.98   | 0.99     | 71202   |
 
-![covariance matrix](images/mlg-ulb/IFcm.png)
+SMOTE-ENN Train time: ~0 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.96   | 0.98     | 71108   |
+| 1.0          | 0.03      | 0.77   | 0.05     | 94      |
+| accuracy     |           |        | 0.96     | 71202   |
+| macro avg    | 0.51      | 0.86   | 0.52     | 71202   |
+| weighted avg | 1.00      | 0.96   | 0.98     | 71202   |
+
+
+![covariance matrix](images/mlg-ulb/default/IFcm.png)
 
 ---
 
 ### Local Outlier Factor
 
 Train time: ~42 seconds
-
-              precision    recall  f1-score   support
-
-           0       1.00      0.77      0.87     71108
-           1       0.00      0.14      0.00        94
-
-    accuracy                           0.77     71202
-   macro avg       0.50      0.45      0.44     71202
-weighted avg       1.00      0.77      0.87     71202
 
 |              | precision | recall | f1-score | support |
 |--------------|-----------|--------|----------|---------|
@@ -258,7 +262,17 @@ weighted avg       1.00      0.77      0.87     71202
 | macro avg    | 0.50      | 0.45   | 0.44     | 71202   |
 | weighted avg | 1.00      | 0.77   | 0.87     | 71202   |
 
-![covariance matrix](images/mlg-ulb/LOFcm.png)
+SMOTE-ENN Train time: ~34 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.76   | 0.86     | 71108   |
+| 1.0          | 0.00      | 0.39   | 0.00     | 94      |
+| accuracy     |           |        | 0.76     | 71202   |
+| macro avg    | 0.50      | 0.58   | 0.43     | 71202   |
+| weighted avg | 1.00      | 0.76   | 0.86     | 71202   |
+
+![covariance matrix](images/mlg-ulb/default/LOFcm.png)
 
 ---
 
@@ -274,22 +288,23 @@ Train time: ~97 seconds
 | macro avg    | 0.52      | 0.81   | 0.54     | 71202   |
 | weighted avg | 1.00      | 0.98   | 0.99     | 71202   |
 
-![covariance matrix](images/mlg-ulb/OCSVMcm.png)
+SMOTE-ENN Train time: ~73 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.98   | 0.99     | 71108   |
+| 1.0          | 0.05      | 0.70   | 0.10     | 94      |
+| accuracy     |           |        | 0.98     | 71202   |
+| macro avg    | 0.53      | 0.84   | 0.54     | 71202   |
+| weighted avg | 1.00      | 0.98   | 0.99     | 71202   |
+
+![covariance matrix](images/mlg-ulb/default/OCSVMcm.png)
 
 ---
 
 ### K-Means
 
 Train time: ~0 seconds
-
-              precision    recall  f1-score   support
-
-           0       1.00      0.94      0.97     71108
-           1       0.00      0.17      0.01        94
-
-    accuracy                           0.94     71202
-   macro avg       0.50      0.56      0.49     71202
-weighted avg       1.00      0.94      0.97     71202
 
 |              | precision | recall | f1-score | support |
 |--------------|-----------|--------|----------|---------|
@@ -299,7 +314,17 @@ weighted avg       1.00      0.94      0.97     71202
 | macro avg    | 0.50      | 0.56   | 0.49     | 71202   |
 | weighted avg | 1.00      | 0.94   | 0.97     | 71202   |
 
-![covariance matrix](images/mlg-ulb/KMcm.png)
+SMOTE-ENN Train time: ~0 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.06   | 0.11     | 71108   |
+| 1.0          | 0.00      | 1.00   | 0.00     | 94      |
+| accuracy     |           |        | 0.06     | 71202   |
+| macro avg    | 0.50      | 0.53   | 0.06     | 71202   |
+| weighted avg | 1.00      | 0.06   | 0.11     | 71202   |
+
+![covariance matrix](images/mlg-ulb/default/KMcm.png)
 
 ---
 
@@ -315,11 +340,25 @@ Train time: ~65 seconds
 | macro avg    | 0.52      | 0.84   | 0.54     | 71202   |
 | weighted avg | 1.00      | 0.98   | 0.99     | 71202   |
 
-![covariance matrix](images/mlg-ulb/AEcm.png)
+SMOTE-ENN Train time: ~54 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.95   | 0.97     | 71108   |
+| 1.0          | 0.02      | 0.81   | 0.04     | 94      |
+| accuracy     |           |        | 0.95     | 71202   |
+| macro avg    | 0.51      | 0.88   | 0.51     | 71202   |
+| weighted avg | 1.00      | 0.95   | 0.97     | 71202   |
+
+![covariance matrix](images/mlg-ulb/default/AEcm.png)
 
 ---
 
 ### PR + ROC Curves
+
+![PR+Roc.png](images/mlg-ulb/default/PRAndRoc.png)
+
+SMOTE-ENN:
 
 ![PR+Roc.png](images/mlg-ulb/PRAndRoc.png)
 
@@ -375,8 +414,8 @@ Added a comparison of the results of 4 different models on the labeled column cr
 
 ### Progress
 
-Added model saving and loading, extracted the data loading and preprocessing into a separate file.
-Added an Autoencoder mode and compared it with the other models.
+Added model saving and loading, extracted the data loading and pre-processing into a separate file.  
+Added an Autoencoder model and compared it with the other models.
 
 ### Next week's goals
 - Improve model parameters
@@ -391,12 +430,16 @@ Added an Autoencoder mode and compared it with the other models.
 ### Progress
 
 Added area under the precision-recall curve (AUPRC) metric to the PRC comparison plot, as this works better for imbalanced datasets.[[1]](#1)  
-Added data loading and comparison for the "Credit Card Fraud Detection" dataset from mlg-ulb, as this dataset is used as a benchmark in a lot of anomaly detection papers.
+Looked for datasets and models in other papers about anomaly detection.  
+Added data loading and comparison for the "Credit Card Fraud Detection" dataset from mlg-ulb, as this dataset is used as a benchmark in a lot of anomaly detection papers.  
+Added SMOTE-ENN (Synthetic Minority Over-sampling Technique + Edited Nearest Neighbors) to the new dataset's loading step, because it improves the accuracy of the models according to this paper.[[2]](#2)
 
 
 ### Next week's goals
 
-- 
+- Look into data simulation
+- Look for dataset other than credit card fraud detection that is not anonymized?
+- Add deep learning models other than autoencoders
 
 
 
@@ -410,9 +453,10 @@ Added data loading and comparison for the "Credit Card Fraud Detection" dataset 
 - https://www.sciencedirect.com/science/article/abs/pii/S1084804515002891
 - https://link.springer.com/article/10.1007/s40747-024-01446-8
 - <a name="1">[1]</a> J. Hancock, T. M. Khoshgoftaar and J. M. Johnson, "Informative Evaluation Metrics for Highly Imbalanced Big Data Classification," 2022 21st IEEE International Conference on Machine Learning and Applications (ICMLA), Nassau, Bahamas, 2022, pp. 1419-1426, doi: 10.1109/ICMLA55696.2022.00224. keywords: {Measurement;Insurance;Machine learning;Receivers;Big Data;Data models;Robustness;Extremely Randomized Trees;XGBoost;Class Imbalance;Big Data;Undersampling;AUC;AUPRC}  
+- <a name="2">[2]</a> https://ieeexplore.ieee.org/abstract/document/9698195
 
 #### List of some papers that use the "Credit Card Fraud Detection" dataset from mlg-ulb:
-[comment]: <> (TODO: Add better citations)
+[comment]: <> (TODO: Add better citations, change them to actual references)
 - https://www.mdpi.com/2079-9292/11/4/662
 - https://www.researchgate.net/profile/Dr-Kumar-Lilhore/publication/341932015_An_Efficient_Credit_Card_Fraud_Detection_Model_Based_on_Machine_Learning_Methods/links/5ee4a477458515814a5b891e/An-Efficient-Credit-Card-Fraud-Detection-Model-Based-on-Machine-Learning-Methods.pdf
 - https://ieeexplore.ieee.org/abstract/document/8979331

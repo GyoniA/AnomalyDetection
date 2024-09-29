@@ -6,6 +6,7 @@ import torch
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import TensorDataset, DataLoader
+from imblearn.combine import SMOTEENN
 
 
 def process_dates(df):
@@ -117,12 +118,13 @@ def load_pointe77_data(drop_string_columns=True, limit=None, path='data/pointe77
     return x_train_scaled, x_test_scaled, y_train, y_test
 
 
-def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', test_size=0.25):
+def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', test_size=0.25, apply_smote_enn=True):
     """
     Load and preprocess the "Credit Card Fraud Detection" dataset from mlg-ulb
 
     :param csv_path: Path to the credit card dataset CSV file
     :param test_size: Proportion of the dataset to reserve for testing (default is 0.25 for a 25% test set)
+    :param apply_smote_enn: Whether to apply SMOTE-ENN to the train dataset or not
     :return: Preprocessed training and test sets (scaled), along with labels
     """
     # Load the dataset
@@ -144,6 +146,13 @@ def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', 
 
     x_test = test_data.drop(columns=['Class'])
     y_test = test_data['Class']
+
+    if apply_smote_enn:
+        print("Applying SMOTE-ENN resampling to the training set...")
+        smote_enn = SMOTEENN(random_state=0, sampling_strategy=0.015)
+        x_train, y_train = smote_enn.fit_resample(x_train, y_train)
+        print(f"SMOTE-ENN applied: Resampled training set size: {len(x_train)} samples, original training set size: {len(train_data)}")
+        print(f"Resampling completed in {(datetime.now() - start_time).seconds} seconds.")
 
     # Normalize the features (standardize to zero mean and unit variance)
     scaler = StandardScaler()
