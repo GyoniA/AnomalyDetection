@@ -188,3 +188,29 @@ def create_dataloader(x_train, x_test, batch_size=64):
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     return train_loader, test_loader
+
+
+def create_classification_dataloader(x_train, x_test, y_train, y_test, batch_size=64):
+    """
+    Convert NumPy arrays to PyTorch tensors and then to DataLoaders for classification.
+
+    :param x_train: Training features
+    :param x_test: Test features
+    :param y_train: Training labels
+    :param y_test: Test labels
+    :param batch_size: Batch size for DataLoaders
+    :return: Training and test DataLoaders
+    """
+    x_train_tensor = torch.tensor(x_train, dtype=torch.float32)
+    y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32)  # Assuming y_train is a Pandas Series
+    x_test_tensor = torch.tensor(x_test, dtype=torch.float32)
+    y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32)
+
+    train_dataset = TensorDataset(x_train_tensor, y_train_tensor)
+    test_dataset = TensorDataset(x_test_tensor, y_test_tensor)
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
+    return train_loader, test_loader
+
