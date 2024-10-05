@@ -383,6 +383,7 @@ Network anomaly detection datasets:
 - https://www.kaggle.com/datasets/aymenabb/ddos-evaluation-dataset-cic-ddos2019
 
 ### Next week's goals
+
 - Select used dataset
 - Find a base architecture for the model
 - Test dataset with simpler methods for comparison
@@ -402,6 +403,7 @@ And this one has a lot of recent data, but no labeled columns:
 Added a comparison of the results of 4 different models on the labeled column credit card transaction dataset, I used Isolation Forest, Local Outlier Factor, One-Class SVM and K-Means clustering.
 
 ### Next week's goals
+
 - Improve model parameters
 - Explain the results
 - Add an initial Deep Learning model and compare it with the others
@@ -418,6 +420,7 @@ Added model saving and loading, extracted the data loading and pre-processing in
 Added an Autoencoder model and compared it with the other models.
 
 ### Next week's goals
+
 - Improve model parameters
 - Add short explanation of comparison metrics
 - Improve Autoencoder architecture or try other deep learning models
@@ -441,7 +444,18 @@ Added SMOTE-ENN (Synthetic Minority Over-sampling Technique + Edited Nearest Nei
 - Look for dataset other than credit card fraud detection that is not anonymized?
 - Add deep learning models other than autoencoders
 
+---
 
+## 5. Week
+
+### Progress
+
+Looked into which deep learning models work best for anomaly detection, and found that Transformer models work really well for tabular data (like the credit card fraud dataset).[[3]](#3)  
+Added a Transformer model to the project.
+
+### Next week's goals
+
+- 
 
 
 
@@ -454,6 +468,7 @@ Added SMOTE-ENN (Synthetic Minority Over-sampling Technique + Edited Nearest Nei
 - https://link.springer.com/article/10.1007/s40747-024-01446-8
 - <a name="1">[1]</a> J. Hancock, T. M. Khoshgoftaar and J. M. Johnson, "Informative Evaluation Metrics for Highly Imbalanced Big Data Classification," 2022 21st IEEE International Conference on Machine Learning and Applications (ICMLA), Nassau, Bahamas, 2022, pp. 1419-1426, doi: 10.1109/ICMLA55696.2022.00224. keywords: {Measurement;Insurance;Machine learning;Receivers;Big Data;Data models;Robustness;Extremely Randomized Trees;XGBoost;Class Imbalance;Big Data;Undersampling;AUC;AUPRC}  
 - <a name="2">[2]</a> https://ieeexplore.ieee.org/abstract/document/9698195
+- <a name="3">[3]</a> https://arxiv.org/html/2406.03733v1#S4
 
 #### List of some papers that use the "Credit Card Fraud Detection" dataset from mlg-ulb:
 [comment]: <> (TODO: Add better citations, change them to actual references)
