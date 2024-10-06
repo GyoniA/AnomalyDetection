@@ -225,7 +225,7 @@ def train_loop(model, train_loader, test_loader, criterion, save_path, device, e
 
 
 def main():
-    x_train_scaled, x_test_scaled, y_train, y_test = load_mlg_ulb_data(apply_smote_enn=True)  # TODO: Test with SMOTE-ENN
+    x_train_scaled, x_test_scaled, y_train, y_test = load_mlg_ulb_data(apply_smote_enn=True)
 
     batch_size = 64
     train_loader, test_loader = create_classification_dataloader(x_train_scaled, x_test_scaled, y_train, y_test,
