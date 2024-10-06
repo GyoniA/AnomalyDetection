@@ -204,8 +204,28 @@ def evaluate_model(model, test_loader, criterion, device):
     return metrics
 
 
+def train_loop(model, train_loader, test_loader, criterion, save_path, device, epochs=20, learning_rate=1e-3):
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    best_metric = 0.0
+    for epoch in range(epochs):
+        model.train()
+        train_loss = train_model(model, train_loader, optimizer, criterion, device)
+        model.eval()
+        metrics = evaluate_model(model, test_loader, criterion, device)
+
+        print(f"Epoch [{epoch + 1}/{epochs}]")
+        print(f"Train Loss: {train_loss:.4f}")
+        print(
+            f"Test Loss: {metrics['Loss']:.4f} | Accuracy: {metrics['Accuracy']:.4f} | Precision: {metrics['Precision']:.4f} | Recall: {metrics['Recall']:.4f} | F1-Score: {metrics['F1-Score']:.4f} | AUC-ROC: {metrics['AUC-ROC']:.4f} | AUPRC: {metrics['AUPRC']:.4f} | Optimal Threshold: {metrics['Optimal Threshold']:.4f}")
+        # Save the model if AUC-ROC improves
+        if metrics['AUC-ROC'] > best_metric:
+            best_metric = metrics['AUC-ROC']
+            torch.save(model.state_dict(), save_path)
+            print("Model saved.")
+
+
 def main():
-    x_train_scaled, x_test_scaled, y_train, y_test = load_mlg_ulb_data(apply_smote_enn=False)  # TODO: Test with SMOTE-ENN
+    x_train_scaled, x_test_scaled, y_train, y_test = load_mlg_ulb_data(apply_smote_enn=True)  # TODO: Test with SMOTE-ENN
 
     batch_size = 64
     train_loader, test_loader = create_classification_dataloader(x_train_scaled, x_test_scaled, y_train, y_test,
@@ -235,32 +255,13 @@ def main():
     pos_weight = class_weights[1] / class_weights[0]
     criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
 
-    learning_rate = 1e-3
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-
     # Training parameters
-    num_epochs = 20
-    best_metric = 0.0
     save_model_path = 'models/mlg-ulb/transformer.pth'
     start_time = datetime.now()
-    for epoch in range(num_epochs):
-        train_loss = train_model(model, train_loader, optimizer, criterion, device)
-        metrics = evaluate_model(model, test_loader, criterion, device)
-
-        print(f"Epoch [{epoch + 1}/{num_epochs}]")
-        print(f"Train Loss: {train_loss:.4f}")
-        print(
-            f"Test Loss: {metrics['Loss']:.4f} | Accuracy: {metrics['Accuracy']:.4f} | Precision: {metrics['Precision']:.4f} | Recall: {metrics['Recall']:.4f} | F1-Score: {metrics['F1-Score']:.4f} | AUC-ROC: {metrics['AUC-ROC']:.4f} | AUPRC: {metrics['AUPRC']:.4f} | Optimal Threshold: {metrics['Optimal Threshold']:.4f}")
-
-        # Save the model if AUC-ROC improves
-        if metrics['AUC-ROC'] > best_metric:
-            best_metric = metrics['AUC-ROC']
-            torch.save(model.state_dict(), save_model_path)
-            print("Model saved.")
+    train_loop(model, train_loader, test_loader, criterion, save_model_path, device)
     print(f"Training completed in {(datetime.now() - start_time).seconds} seconds.")
     # Load the best model
-    model.load_state_dict(torch.load(save_model_path))
-    model = model.to(device)
+    model.load_state_dict(torch.load(save_model_path, map_location=device))
 
     # Final evaluation
     final_metrics = evaluate_model(model, test_loader, criterion, device)
