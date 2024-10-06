@@ -354,6 +354,28 @@ SMOTE-ENN Train time: ~54 seconds
 
 ---
 
+### Transformer
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.99   | 1.00     | 71108   |
+| 1.0          | 0.10      | 0.68   | 0.18     | 94      |
+| accuracy     |           |        | 0.99     | 71202   |
+| macro avg    | 0.55      | 0.84   | 0.59     | 71202   |
+| weighted avg | 1.00      | 0.99   | 0.99     | 71202   |
+
+SMOTE-ENN:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.99   | 1.00     | 71108   |
+| 1.0          | 0.10      | 0.76   | 0.18     | 94      |
+| accuracy     |           |        | 0.99     | 71202   |
+| macro avg    | 0.55      | 0.87   | 0.59     | 71202   |
+| weighted avg | 1.00      | 0.99   | 0.99     | 71202   |
+
+![covariance matrix](images/mlg-ulb/default/Transformercm.png)
+
 ### PR + ROC Curves
 
 ![PR+Roc.png](images/mlg-ulb/default/PRAndRoc.png)
@@ -451,7 +473,7 @@ Added SMOTE-ENN (Synthetic Minority Over-sampling Technique + Edited Nearest Nei
 ### Progress
 
 Looked into which deep learning models work best for anomaly detection, and found that Transformer models work really well for tabular data (like the credit card fraud dataset).[[3]](#3)  
-Added a Transformer model to the project.
+Added a Transformer model to the project and compared it with the other models.
 
 ### Next week's goals
 

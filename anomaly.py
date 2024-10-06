@@ -10,19 +10,26 @@ from sklearn.ensemble import IsolationForest
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay, precision_recall_curve, roc_curve, auc
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.svm import OneClassSVM
+from torch import nn
 
 import data_loader
 import auto_encoder as ae
+from transformer import TransformerClassifier, train_loop, compute_class_weights, get_optimal_threshold
 
 # model_name = 'pointe77'
 # X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_pointe77_data()
 
+# model_name = 'mlg-ulb/default'
+# X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(apply_smote_enn=False)
+
 model_name = 'mlg-ulb'
-X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data()
+X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(apply_smote_enn=True)
 
 model_path = f'models/{model_name}/'
 
 train_loader, test_loader = data_loader.create_dataloader(X_train_scaled, X_test_scaled)
+
+class_train_loader, class_test_loader = data_loader.create_classification_dataloader(X_train_scaled, X_test_scaled, y_train, y_test)
 
 start_time = datetime.now()
 # Train and test anomaly detection models
@@ -117,11 +124,56 @@ else:
     print(f"Autoencoder model training completed in {(datetime.now() - start_time).seconds} seconds, weights saved to {ae_model_path}")
 
 # Get reconstruction error on the test data
-reconstruction_error = ae.get_reconstruction_error(autoencoder_model, test_loader, device)
+reconstruction_error = ae.get_reconstruction_error(autoencoder_model, test_loader, 'cpu')  #TODO: Make this work with GPU
 # Set a threshold for anomaly detection
 threshold = np.percentile(reconstruction_error, 95)
 # Get predictions based on the threshold
 pred_ae = np.where(reconstruction_error > threshold, 1, 0)
+
+start_time = datetime.now()
+# 6. Transformer
+# Define the Transformer model
+transformer_model = TransformerClassifier(input_dim=X_train_scaled.shape[1])
+transformer_model = transformer_model.to(device)
+
+transformer_model_path = model_path + 'transformer.pth'
+
+# Load the trained Transformer model if exists
+if os.path.exists(transformer_model_path):
+    print(f"\nLoading Transformer model from {transformer_model_path}...")
+    transformer_model.load_state_dict(torch.load(transformer_model_path, map_location=device))
+    print(f"Transformer model loaded in {(datetime.now() - start_time).seconds} seconds")
+else:
+    # Train the model if it's not already saved
+    print("\nTraining Transformer...")
+    class_weights = compute_class_weights(y_train)
+    class_weights = class_weights.to(device)
+    pos_weight = class_weights[1] / class_weights[0]
+    criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+
+    train_loop(transformer_model, class_train_loader, class_test_loader, criterion, transformer_model_path, device)
+    transformer_model.load_state_dict(torch.load(transformer_model_path, map_location=device))
+    print(f"Transformer model training completed in {(datetime.now() - start_time).seconds} seconds, weights saved to {transformer_model_path}")
+
+# Transformer evaluation
+transformer_model.eval()
+all_labels_transformer = []
+all_probs_transformer = []
+
+with torch.no_grad():
+    for inputs, labels in class_test_loader:
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+
+        outputs = transformer_model(inputs)
+        probs = torch.sigmoid(outputs)
+
+        all_labels_transformer.extend(labels.cpu().numpy())
+        all_probs_transformer.extend(probs.cpu().numpy())
+
+# Determine optimal threshold
+optimal_threshold, best_f1 = get_optimal_threshold(np.array(all_labels_transformer), np.array(all_probs_transformer))
+preds_transformer = (np.array(all_probs_transformer) >= optimal_threshold).astype(int)
 
 print("\n--- Evaluation Results ---\n")
 plot_path = f'images/{model_name}/'
@@ -153,13 +205,20 @@ cm_kmeans = ConfusionMatrixDisplay.from_predictions(y_test, pred_kmeans, display
 plt.title("K-Means Confusion Matrix")
 plt.savefig(plot_path + 'KMcm.png')
 
-
 # Autoencoder evaluation
 print("Autoencoder (AE):")
 print(classification_report(y_test, pred_ae))
 cm_ae = ConfusionMatrixDisplay.from_predictions(y_test, pred_ae, display_labels=["Non-Fraud", "Fraud"])
 plt.title("Autoencoder Confusion Matrix")
 plt.savefig(plot_path + 'AEcm.png')
+
+# Transformer evaluation
+print("Transformer:")
+print(classification_report(y_test, preds_transformer))
+cm_transformer = ConfusionMatrixDisplay.from_predictions(y_test, preds_transformer, display_labels=["Non-Fraud", "Fraud"])
+plt.title("Transformer Confusion Matrix")
+plt.savefig(plot_path + 'Transformercm.png')
+plt.show()
 
 plt.show()
 
@@ -193,6 +252,7 @@ plot_precision_recall(y_test, pred_lof, 'LOF')
 plot_precision_recall(y_test, pred_ocsvm, 'One-Class SVM')
 plot_precision_recall(y_test, pred_kmeans, 'K-Means')
 plot_precision_recall(y_test, pred_ae, 'Autoencoder')
+plot_precision_recall(y_test, preds_transformer, 'Transformer')
 plt.legend()
 plt.subplot(1, 2, 2)
 plot_roc(y_test, pred_if, 'Isolation Forest')
@@ -200,6 +260,7 @@ plot_roc(y_test, pred_lof, 'LOF')
 plot_roc(y_test, pred_ocsvm, 'One-Class SVM')
 plot_roc(y_test, pred_kmeans, 'K-Means')
 plot_roc(y_test, pred_ae, 'Autoencoder')
+plot_roc(y_test, preds_transformer, 'Transformer')
 plt.legend()
 plt.tight_layout()
 plt.savefig(plot_path + 'PRAndRoc.png')
