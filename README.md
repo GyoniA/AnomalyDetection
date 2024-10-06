@@ -473,11 +473,17 @@ Added SMOTE-ENN (Synthetic Minority Over-sampling Technique + Edited Nearest Nei
 ### Progress
 
 Looked into which deep learning models work best for anomaly detection, and found that Transformer models work really well for tabular data (like the credit card fraud dataset).[[3]](#3)  
-Added a Transformer model to the project and compared it with the other models.
+Added a Transformer model to the project and compared it with the other models.  
+Looked for data generation methods that can be used to generate synthetic data for anomaly detection.
+Potential data generation methods:
+- Synthetic Minority Over-sampling Technique (SMOTE) (Like I tried previously)
+- CTGAN (Conditional Tabular Generative Adversarial Networks) [[4]](#4), implemented in the SDV library [[5]](#5). Could be used for expanding small but labeled datasets
+- Faker library with extra providers [[6]](#6) could be used to turn anonymized data into fake data
 
 ### Next week's goals
 
 - Tune parameters of models (especially Transformer)
+- Use data generation methods to improve model performance
 
 
 
@@ -491,6 +497,10 @@ Added a Transformer model to the project and compared it with the other models.
 - <a name="1">[1]</a> J. Hancock, T. M. Khoshgoftaar and J. M. Johnson, "Informative Evaluation Metrics for Highly Imbalanced Big Data Classification," 2022 21st IEEE International Conference on Machine Learning and Applications (ICMLA), Nassau, Bahamas, 2022, pp. 1419-1426, doi: 10.1109/ICMLA55696.2022.00224. keywords: {Measurement;Insurance;Machine learning;Receivers;Big Data;Data models;Robustness;Extremely Randomized Trees;XGBoost;Class Imbalance;Big Data;Undersampling;AUC;AUPRC}  
 - <a name="2">[2]</a> https://ieeexplore.ieee.org/abstract/document/9698195
 - <a name="3">[3]</a> https://arxiv.org/html/2406.03733v1#S4
+- <a name="4">[4]</a> https://github.com/sdv-dev/CTGAN
+- <a name="5">[5]</a> https://github.com/sdv-dev/SDV
+- <a name="6">[6]</a> https://github.com/joke2k/faker
+- Paper about data generation: https://ieeexplore.ieee.org/document/10072179
 
 #### List of some papers that use the "Credit Card Fraud Detection" dataset from mlg-ulb:
 [comment]: <> (TODO: Add better citations, change them to actual references)
