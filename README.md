@@ -477,7 +477,7 @@ Added a Transformer model to the project and compared it with the other models.
 
 ### Next week's goals
 
-- 
+- Tune parameters of models (especially Transformer)
 
 
 
