@@ -22,7 +22,7 @@ from transformer import TransformerClassifier, train_loop, compute_class_weights
 # model_name = 'mlg-ulb/default'
 # X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(apply_smote_enn=False)
 
-model_name = 'mlg-ulb'
+model_name = 'mlg-ulb/smote'
 X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(apply_smote_enn=True)
 
 model_path = f'models/{model_name}/'

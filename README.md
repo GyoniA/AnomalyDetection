@@ -485,6 +485,13 @@ Potential data generation methods:
 - Tune parameters of models (especially Transformer)
 - Use data generation methods to improve model performance
 
+## 6. Week
+
+### Progress
+
+
+### Next week's goals
+
 
 
 ---
