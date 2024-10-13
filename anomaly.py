@@ -20,14 +20,17 @@ from transformer import TransformerClassifier, train_loop, compute_class_weights
 # X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_pointe77_data()
 
 # model_name = 'mlg-ulb/default'
-# X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(apply_smote_enn=False)
+# X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(resampling=None)
 
-model_name = 'mlg-ulb/smote'
-X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(apply_smote_enn=True)
+# model_name = 'mlg-ulb/smote'
+# X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(resampling='smote')
+
+model_name = 'mlg-ulb/ctgan'
+X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(resampling='ctgan')
 
 model_path = f'models/{model_name}/'
 
-train_loader, test_loader = data_loader.create_dataloader(X_train_scaled, X_test_scaled)
+train_loader, test_loader = data_loader.create_dataloader(X_train_scaled, X_test_scaled, use_gpu=torch.cuda.is_available())
 
 class_train_loader, class_test_loader = data_loader.create_classification_dataloader(X_train_scaled, X_test_scaled, y_train, y_test)
 
@@ -122,9 +125,9 @@ else:
     autoencoder_model = ae.train_autoencoder(autoencoder_model, train_loader, device, epochs=10, lr=0.001)
     torch.save(autoencoder_model.state_dict(), ae_model_path)
     print(f"Autoencoder model training completed in {(datetime.now() - start_time).seconds} seconds, weights saved to {ae_model_path}")
-
+autoencoder_model = autoencoder_model.to(device)
 # Get reconstruction error on the test data
-reconstruction_error = ae.get_reconstruction_error(autoencoder_model, test_loader, 'cpu')  #TODO: Make this work with GPU
+reconstruction_error = ae.get_reconstruction_error(autoencoder_model, test_loader, device)  #TODO: Make this work with GPU
 # Set a threshold for anomaly detection
 threshold = np.percentile(reconstruction_error, 95)
 # Get predictions based on the threshold

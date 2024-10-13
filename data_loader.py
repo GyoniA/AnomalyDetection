@@ -1,12 +1,16 @@
+import os
 from datetime import datetime
 
+import joblib
 import numpy as np
 import pandas as pd
 import torch
+from sdv.metadata import Metadata
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import TensorDataset, DataLoader
 from imblearn.combine import SMOTEENN
+from sdv.single_table import CTGANSynthesizer
 
 
 def process_dates(df):
@@ -118,14 +122,77 @@ def load_pointe77_data(drop_string_columns=True, limit=None, path='data/pointe77
     return x_train_scaled, x_test_scaled, y_train, y_test
 
 
-def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', test_size=0.25, apply_smote_enn=True):
+def ctgan_resample(train_data, y_train, target_column, random_state, desired_fraud_ratio=0.01, epochs=100):
+    start_time = datetime.now()
+    current_fraud_ratio = y_train.sum() / len(train_data)
+
+    numerator = desired_fraud_ratio * len(train_data) - y_train.sum()
+    denominator = 1 - desired_fraud_ratio
+    num_samples = int(np.ceil(numerator / denominator)) if denominator != 0 else 0
+
+    if num_samples <= 0:
+        print(
+            f"Desired fraud ratio of {desired_fraud_ratio * 100}% is already achieved or cannot be achieved with the current data."
+        )
+        augmented_train = train_data
+    else:
+        ctgan_save_path = f'data/mlg-ulb/credit-card-fraud/ctgan_{epochs}_epochs.pkl'
+        print(f"Number of synthetic fraud samples to generate: {num_samples}")
+        ctgan_start_time = datetime.now()
+        if os.path.exists(ctgan_save_path):
+            print(f"Loading CTGAN from {ctgan_save_path}...")
+            ctgan = joblib.load(ctgan_save_path)
+            print(f"CTGAN loaded in {(datetime.now() - ctgan_start_time).seconds} seconds.")
+        else:
+            print(f"Training CTGAN...")
+            metadata = Metadata.detect_from_dataframe(train_data)
+            ctgan = CTGANSynthesizer(metadata=metadata, epochs=epochs, verbose=True)
+            ctgan.fit(train_data)
+            joblib.dump(ctgan, ctgan_save_path)
+            print(f"CTGAN training completed in {(datetime.now() - ctgan_start_time).seconds} seconds.")
+        ctgan_start_time = datetime.now()
+        # Generate synthetic data
+        synthetic_data = ctgan.sample(int(num_samples / current_fraud_ratio / 150))  # TODO: Check if this is too much
+        synthetic_frauds = synthetic_data.query(f"{target_column} == 1")
+
+        # Ensure that all synthetic samples are frauds
+        num_frauds = synthetic_frauds[target_column].sum()
+        print(f"Number of synthetic frauds generated: {num_frauds} in {(datetime.now() - ctgan_start_time).seconds} seconds.")
+        if num_frauds > num_samples:
+            print(f"Dropping synthetic frauds.")
+            fraction = num_samples / num_frauds
+            synthetic_frauds = synthetic_frauds.sample(frac=fraction, random_state=random_state).reset_index(drop=True)
+            num_frauds = synthetic_frauds[target_column].sum()
+            print(f"Number of synthetic frauds after dropping: {num_frauds}")
+
+        # Combine synthetic frauds with the original training data
+        augmented_train = pd.concat([train_data, synthetic_frauds], ignore_index=True)
+
+        # Shuffle the augmented training data
+        augmented_train = augmented_train.sample(frac=1, random_state=random_state).reset_index(drop=True)
+
+        print(
+            f"Augmented training set size: {len(augmented_train)} samples, with {augmented_train[target_column].sum()} " +
+            f"fraud cases ({100 * augmented_train[target_column].sum() / len(augmented_train):.2f}%)."
+        )
+        print(f"Data generation completed in {(datetime.now() - start_time).seconds} seconds.")
+
+    # Separate features and target after augmentation
+    x_train = augmented_train.drop(columns=[target_column])
+    y_train = augmented_train[target_column]
+
+    return x_train, y_train
+
+
+def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', test_size=0.25, resampling=None, random_state=0):
     """
     Load and preprocess the "Credit Card Fraud Detection" dataset from mlg-ulb
 
     :param csv_path: Path to the credit card dataset CSV file
     :param test_size: Proportion of the dataset to reserve for testing (default is 0.25 for a 25% test set)
-    :param apply_smote_enn: Whether to apply SMOTE-ENN to the train dataset or not
+    :param resampling: Resampling method to use (default is None, which means no resampling), options are 'smote' and 'ctgan'
     :return: Preprocessed training and test sets (scaled), along with labels
+    :param random_state: The random state to use for resampling
     """
     # Load the dataset
     start_time = datetime.now()
@@ -140,19 +207,24 @@ def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', 
     train_data = data.iloc[:split_index]
     test_data = data.iloc[split_index:]
 
+    target_column = 'Class'
     # Separate features and target ('Class' is the target for fraud detection)
-    x_train = train_data.drop(columns=['Class'])
-    y_train = train_data['Class']
+    x_train = train_data.drop(columns=[target_column])
+    y_train = train_data[target_column]
 
-    x_test = test_data.drop(columns=['Class'])
-    y_test = test_data['Class']
+    x_test = test_data.drop(columns=[target_column])
+    y_test = test_data[target_column]
 
-    if apply_smote_enn:
+    if resampling == 'smote':
         print("Applying SMOTE-ENN resampling to the training set...")
-        smote_enn = SMOTEENN(random_state=0, sampling_strategy=0.015)
+        smote_enn = SMOTEENN(random_state=random_state, sampling_strategy=0.015)
         x_train, y_train = smote_enn.fit_resample(x_train, y_train)
         print(f"SMOTE-ENN applied: Resampled training set size: {len(x_train)} samples, original training set size: {len(train_data)}")
         print(f"Resampling completed in {(datetime.now() - start_time).seconds} seconds.")
+
+    if resampling == 'ctgan':
+        print("Applying CTGAN-based data generation to the training set...")
+        x_train, y_train = ctgan_resample(train_data, y_train, target_column, random_state)
 
     # Normalize the features (standardize to zero mean and unit variance)
     scaler = StandardScaler()
@@ -174,7 +246,7 @@ def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', 
     return x_train_scaled, x_test_scaled, y_train, y_test
 
 
-def create_dataloader(x_train, x_test, batch_size=64):
+def create_dataloader(x_train, x_test, batch_size=64, use_gpu=False):
     """
     Convert NumPy arrays to PyTorch tensors and then to DataLoaders
     """
@@ -184,8 +256,9 @@ def create_dataloader(x_train, x_test, batch_size=64):
     train_dataset = TensorDataset(x_train_tensor)
     test_dataset = TensorDataset(x_test_tensor)
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    device = 'cuda' if use_gpu and torch.cuda.is_available() else 'cpu'
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, pin_memory=use_gpu, pin_memory_device=device)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, pin_memory=use_gpu, pin_memory_device=device)
 
     return train_loader, test_loader
 

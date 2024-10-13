@@ -245,6 +245,16 @@ SMOTE-ENN Train time: ~0 seconds
 | macro avg    | 0.51      | 0.86   | 0.52     | 71202   |
 | weighted avg | 1.00      | 0.96   | 0.98     | 71202   |
 
+CTGAN:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.96   | 0.98     | 71108   |
+| 1.0          | 0.03      | 0.74   | 0.05     | 94      |
+| accuracy     |           |        | 0.96     | 71202   |
+| macro avg    | 0.51      | 0.85   | 0.51     | 71202   |
+| weighted avg | 1.00      | 0.96   | 0.98     | 71202   |
+
 
 ![covariance matrix](images/mlg-ulb/default/IFcm.png)
 
@@ -272,6 +282,16 @@ SMOTE-ENN Train time: ~34 seconds
 | macro avg    | 0.50      | 0.58   | 0.43     | 71202   |
 | weighted avg | 1.00      | 0.76   | 0.86     | 71202   |
 
+CTGAN:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.77   | 0.87     | 71108   |
+| 1.0          | 0.00      | 0.14   | 0.00     | 94      |
+| accuracy     |           |        | 0.77     | 71202   |
+| macro avg    | 0.50      | 0.45   | 0.43     | 71202   |
+| weighted avg | 1.00      | 0.77   | 0.87     | 71202   |
+
 ![covariance matrix](images/mlg-ulb/default/LOFcm.png)
 
 ---
@@ -296,6 +316,16 @@ SMOTE-ENN Train time: ~73 seconds
 | 1.0          | 0.05      | 0.70   | 0.10     | 94      |
 | accuracy     |           |        | 0.98     | 71202   |
 | macro avg    | 0.53      | 0.84   | 0.54     | 71202   |
+| weighted avg | 1.00      | 0.98   | 0.99     | 71202   |
+
+CTGAN:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.98   | 0.99     | 71108   |
+| 1.0          | 0.03      | 0.40   | 0.06     | 94      |
+| accuracy     |           |        | 0.98     | 71202   |
+| macro avg    | 0.52      | 0.69   | 0.52     | 71202   |
 | weighted avg | 1.00      | 0.98   | 0.99     | 71202   |
 
 ![covariance matrix](images/mlg-ulb/default/OCSVMcm.png)
@@ -324,6 +354,16 @@ SMOTE-ENN Train time: ~0 seconds
 | macro avg    | 0.50      | 0.53   | 0.06     | 71202   |
 | weighted avg | 1.00      | 0.06   | 0.11     | 71202   |
 
+CTGAN:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.00      | 0.00   | 0.00     | 71108   |
+| 1.0          | 0.00      | 0.54   | 0.00     | 94      |
+| accuracy     |           |        | 0.00     | 71202   |
+| macro avg    | 0.00      | 0.27   | 0.00     | 71202   |
+| weighted avg | 0.00      | 0.00   | 0.00     | 71202   |
+
 ![covariance matrix](images/mlg-ulb/default/KMcm.png)
 
 ---
@@ -350,6 +390,16 @@ SMOTE-ENN Train time: ~54 seconds
 | macro avg    | 0.51      | 0.88   | 0.51     | 71202   |
 | weighted avg | 1.00      | 0.95   | 0.97     | 71202   |
 
+CTGAN:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.95   | 0.97     | 71108   |
+| 1.0          | 0.02      | 0.82   | 0.04     | 94      |
+| accuracy     |           |        | 0.95     | 71202   |
+| macro avg    | 0.51      | 0.89   | 0.51     | 71202   |
+| weighted avg | 1.00      | 0.95   | 0.97     | 71202   |
+
 ![covariance matrix](images/mlg-ulb/default/AEcm.png)
 
 ---
@@ -374,6 +424,17 @@ SMOTE-ENN:
 | macro avg    | 0.55      | 0.87   | 0.59     | 71202   |
 | weighted avg | 1.00      | 0.99   | 0.99     | 71202   |
 
+CTGAN:
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.99   | 1.00     | 71108   |
+| 1.0          | 0.10      | 0.76   | 0.18     | 94      |
+| accuracy     |           |        | 0.99     | 71202   |
+| macro avg    | 0.55      | 0.81   | 0.59     | 71202   |
+| weighted avg | 1.00      | 0.99   | 0.99     | 71202   |
+
+
 ![covariance matrix](images/mlg-ulb/default/Transformercm.png)
 
 ### PR + ROC Curves
@@ -382,7 +443,11 @@ SMOTE-ENN:
 
 SMOTE-ENN:
 
-![PR+Roc.png](images/mlg-ulb/PRAndRoc.png)
+![PR+Roc.png](images/mlg-ulb/smote/PRAndRoc.png)
+
+CTGAN:
+
+![PR+Roc.png](images/mlg-ulb/ctgan/PRAndRoc.png)
 
 ---
 
@@ -489,6 +554,8 @@ Potential data generation methods:
 
 ### Progress
 
+Added a CTGAN-based data generation method to the data loader, which is used to augment the training data with synthetic frauds.  
+This method resulted in worse results than the SMOTE-ENN method or the default dataset, so it might not be a good fit for this use case.
 
 ### Next week's goals
 

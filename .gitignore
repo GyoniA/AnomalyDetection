@@ -11,6 +11,9 @@ __pycache__/
 .DS_Store
 # Ignore data files
 data/**/*.csv
+data/**/*.zip
+data/**/*.pkl
 models/**/*.pkl
 models/**/*.zip
+models/**/*.rar
 models/**/*.pth
