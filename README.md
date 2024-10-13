@@ -555,11 +555,14 @@ Potential data generation methods:
 ### Progress
 
 Added a CTGAN-based data generation method to the data loader, which is used to augment the training data with synthetic frauds.  
-This method resulted in worse results than the SMOTE-ENN method or the default dataset, so it might not be a good fit for this use case.
+This method resulted in worse results than the SMOTE-ENN method or the default dataset, so it might not be a good fit for this use case.  
+Added a presentation for week 6 that covers my progress on the project so far.
 
 ### Next week's goals
 
-
+- Look for other types of datasets (not just credit card fraud) that have non-anonymized data
+- Tune parameters of models (especially Transformer)
+- Run tests on first dataset
 
 ---
 
