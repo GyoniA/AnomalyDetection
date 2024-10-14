@@ -556,11 +556,22 @@ Potential data generation methods:
 
 Added a CTGAN-based data generation method to the data loader, which is used to augment the training data with synthetic frauds.  
 This method resulted in worse results than the SMOTE-ENN method or the default dataset, so it might not be a good fit for this use case.  
-Added a presentation for week 6 that covers my progress on the project so far.
+Added a presentation for week 6 that covers my progress on the project so far.  
+I looked into datasets for other anomaly detection tasks, which are non-anonymized and not as unbalanced in terms of anomaly ratio, and I found the following:  
+Network traffic:
+- https://www.unb.ca/cic/datasets/ids-2018.html
+- https://www.unb.ca/cic/datasets/cic-unsw-nb15.html (Has multiple different anomaly types)  
+
+Industrial Control Systems:
+- https://paperswithcode.com/dataset/swat-a7 (Water Treatment Plant)  
+
+Machinery monitoring:
+- https://data.nasa.gov/Raw-Data/IMS-Bearings/brfb-gzcv/about_data (Nasa Bearings Dataset)
 
 ### Next week's goals
 
 - Look for other types of datasets (not just credit card fraud) that have non-anonymized data
+- Choose a new type of anomaly detection task to test on
 - Tune parameters of models (especially Transformer)
 - Run tests on first dataset
 
