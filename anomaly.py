@@ -37,6 +37,9 @@ train_loader, test_loader = data_loader.create_dataloader(X_train_scaled, X_test
 
 class_train_loader, class_test_loader = data_loader.create_classification_dataloader(X_train_scaled, X_test_scaled, y_train, y_test)
 
+# Set the contamination parameter based on the train dataset (percentage of fraud cases)
+contamination = 0.2 if model_name == 'cic-unsw-nb15' else y_train.sum() / len(y_train)
+
 start_time = datetime.now()
 # Train and test anomaly detection models
 # 1. Isolation Forest
@@ -48,7 +51,7 @@ if os.path.exists(ISOFOREST_model_path):
     print(f"Isolation Forest loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining Isolation Forest...")
-    isolation_forest = IsolationForest(contamination='auto')
+    isolation_forest = IsolationForest(contamination=contamination)
     isolation_forest.fit(X_train_scaled)
     # Save the model
     joblib.dump(isolation_forest, ISOFOREST_model_path)
@@ -66,7 +69,7 @@ if os.path.exists(LOF_model_path):
     print(f"LOF loaded in {(datetime.now() - start_time).seconds} seconds")
 else:
     print("\nTraining Local Outlier Factor...")
-    lof = LocalOutlierFactor(contamination="auto", novelty=True, n_neighbors=10)
+    lof = LocalOutlierFactor(contamination=contamination, novelty=True, n_neighbors=10)
     lof.fit(X_train_scaled)
     # Save the model
     joblib.dump(lof, LOF_model_path)
@@ -181,7 +184,7 @@ with torch.no_grad():
 optimal_threshold, best_f1 = get_optimal_threshold(np.array(all_labels_transformer), np.array(all_probs_transformer))
 preds_transformer = (np.array(all_probs_transformer) >= optimal_threshold).astype(int)
 
-values_format = ".2d"  # The number format to use for the confusion matrix values
+values_format = "d"  # The number format to use for the confusion matrix values
 print("\n--- Evaluation Results ---\n")
 plot_path = f'images/{model_name}/'
 # Isolation Forest evaluation

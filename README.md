@@ -217,6 +217,8 @@ Train time: ~0 seconds
 
 ![PR+Roc.png](images/pointe77/PRAndRoc.png)
 
+---
+
 ## On anonymized credit card fraud dataset
 
 Used dataset: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data  
@@ -437,6 +439,8 @@ CTGAN:
 
 ![covariance matrix](images/mlg-ulb/default/Transformercm.png)
 
+---
+
 ### PR + ROC Curves
 
 ![PR+Roc.png](images/mlg-ulb/default/PRAndRoc.png)
@@ -448,6 +452,100 @@ SMOTE-ENN:
 CTGAN:
 
 ![PR+Roc.png](images/mlg-ulb/ctgan/PRAndRoc.png)
+
+---
+
+## On CIC-UNSW-NB15 network traffic dataset
+
+Used dataset: https://www.unb.ca/cic/datasets/cic-unsw-nb15.html
+
+### Isolation Forest
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.85      | 0.85   | 0.85     | 71666   |
+| 1.0          | 0.40      | 0.40   | 0.40     | 17917   |
+| accuracy     |           |        | 0.76     | 89583   |
+| macro avg    | 0.63      | 0.63   | 0.63     | 89583   |
+| weighted avg | 0.76      | 0.76   | 0.76     | 89583   |
+
+![covariance matrix](images/cic-unsw-nb15/IFcm.png)
+
+---
+
+### Local Outlier Factor
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.79      | 0.78   | 0.79     | 71666   |
+| 1.0          | 0.17      | 0.18   | 0.18     | 17917   |
+| accuracy     |           |        | 0.66     | 89583   |
+| macro avg    | 0.48      | 0.48   | 0.48     | 89583   |
+| weighted avg | 0.67      | 0.66   | 0.66     | 89583   |
+
+![covariance matrix](images/cic-unsw-nb15/LOFcm.png)
+
+---
+
+### One-Class SVM
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.80      | 1.00   | 0.89     | 71666   |
+| 1.0          | 0.68      | 0.02   | 0.03     | 17917   |
+| accuracy     |           |        | 0.80     | 89583   |
+| macro avg    | 0.74      | 0.51   | 0.46     | 89583   |
+| weighted avg | 0.78      | 0.80   | 0.72     | 89583   |
+
+![covariance matrix](images/cic-unsw-nb15/OCSVMcm.png)
+
+---
+
+### K-Means
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.80      | 1.00   | 0.89     | 71666   |
+| 1.0          | 0.94      | 0.00   | 0.01     | 17917   |
+| accuracy     |           |        | 0.80     | 89583   |
+| macro avg    | 0.87      | 0.50   | 0.45     | 89583   |
+| weighted avg | 0.83      | 0.80   | 0.71     | 89583   |
+
+![covariance matrix](images/cic-unsw-nb15/KMcm.png)
+
+---
+
+### Autoencoder
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.81      | 0.96   | 0.88     | 71666   |
+| 1.0          | 0.42      | 0.11   | 0.17     | 17917   |  
+| accuracy     |           |        | 0.79     | 89583   |
+| macro avg    | 0.62      | 0.53   | 0.52     | 89583   |
+| weighted avg | 0.73      | 0.79   | 0.74     | 89583   |
+
+![covariance matrix](images/cic-unsw-nb15/AEcm.png)
+
+---
+
+### Transformer
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 0.97   | 0.99     | 71666   |
+| 1.0          | 0.90      | 1.00   | 0.95     | 17917   |
+| accuracy     |           |        | 0.98     | 89583   | 
+| macro avg    | 0.95      | 0.99   | 0.97     | 89583   |
+| weighted avg | 0.98      | 0.98   | 0.98     | 89583   |
+
+![covariance matrix](images/cic-unsw-nb15/Transformercm.png)
+
+---
+
+### PR + ROC Curves
+
+![PR+Roc.png](images/cic-unsw-nb15/PRAndRoc.png)
 
 ---
 
@@ -583,8 +681,9 @@ Machinery monitoring:
 
 ### Progress
 
-Added the CIC-UNSW-NB15 dataset to the project, which is a network traffic dataset with benign and malicious traffic.[[7]](#7)
-
+Added the CIC-UNSW-NB15 dataset to the project, which is a network traffic dataset with benign and malicious traffic.[[7]](#7)  
+Added comparison of the results of the 6 models on the CIC-UNSW-NB15 dataset.  
+Notably, the Transformer model performed the best by a very wide margin, the other models might have a problem with this dataset for some reason, as they performed quite poorly, I'll have to investigate this further.
 
 ### Next week's goals
 
@@ -604,7 +703,7 @@ Added the CIC-UNSW-NB15 dataset to the project, which is a network traffic datas
 - <a name="5">[5]</a> https://github.com/sdv-dev/SDV
 - <a name="6">[6]</a> https://github.com/joke2k/faker
 - Paper about data generation: https://ieeexplore.ieee.org/document/10072179
-- <a name="7">[7]</a> H. Mohammadian, A. H. Lashkari, A. Ghorbani. “Poisoning and Evasion: Deep Learning-Based NIDS under Adversarial Attacks,” 21st Annual International Conference on Privacy, Security and Trust (PST), 2024.
+- <a name="7">[7]</a> H. Mohammadian, A. H. Lashkari, A. Ghorbani. “Poisoning and Evasion: Deep Learning-Based NIDS under Adversarial Attacks,” 21st Annual International Conference on Privacy, Security and Trust (PST), 2024. (https://www.unb.ca/cic/datasets/cic-unsw-nb15.html)
 
 #### List of some papers that use the "Credit Card Fraud Detection" dataset from mlg-ulb:
 [comment]: <> (TODO: Add better citations, change them to actual references)
