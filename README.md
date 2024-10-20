@@ -682,12 +682,16 @@ Machinery monitoring:
 ### Progress
 
 Added the CIC-UNSW-NB15 dataset to the project, which is a network traffic dataset with benign and malicious traffic.[[7]](#7)  
+I chose this dataset, and not the other ones I listed, because it is fairly recent, has a large amount of data, it is more balanced in terms of anomaly ratio (20%), and it was easily accessible.  
 Added comparison of the results of the 6 models on the CIC-UNSW-NB15 dataset.  
 Notably, the Transformer model performed the best by a very wide margin, the other models might have a problem with this dataset for some reason, as they performed quite poorly, I'll have to investigate this further.
+Added an initial Flask based frontend for the project, which allows the user to select a model and evaluate it on a test dataset.
 
 ### Next week's goals
 
-- 
+- Improve the Flask based frontend (make it look nicer, add more functionality)
+- Check if the performance of the models (other than the Transformer) can be improved on the CIC-UNSW-NB15 dataset
+- Add mocked live data generation to the project and some way to visualize it on the frontend
 
 ---
 

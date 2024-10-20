@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anomaly Detection - Model Selection</title>
+</head>
+<body>
+    <h1>Select a Model to Evaluate</h1>
+    <form action="/evaluate" method="POST">
+        <label for="model">Choose a model:</label>
+        <select name="model" id="model">
+            {% for model in models %}
+                <option value="{{ model }}">{{ model }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Evaluate</button>
+    </form>
+</body>
+</html>

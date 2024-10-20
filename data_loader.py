@@ -287,6 +287,12 @@ def load_cic_unsw_data(data_path="data/cic-unsw-nb15/Data.csv", labels_path="dat
         x_train, x_test = x_scaled[train_index], x_scaled[test_index]
         y_train, y_test = y[train_index], y[test_index]
 
+    if binary:
+        print(f"Train data: {len(x_train) / (len(x_train) + len(x_test))*100:.2f}%, train anomaly: {sum(y_train) / len(y_train) * 100:.2f}%, test anomaly: {sum(y_test) / len(y_test) * 100:.2f}%")
+    else:
+        # Format to percentage, with 2 decimal places
+        print(f"Train data%: {len(x_train) / (len(x_train) + len(x_test))*100:.2f}%")
+
     print(f"Data loaded and processed in {(datetime.now() - start_time).seconds} seconds")
 
     return x_train, x_test, y_train, y_test
