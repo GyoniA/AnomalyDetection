@@ -7,6 +7,7 @@ import pandas as pd
 import torch
 from sdv.metadata import Metadata
 from sklearn.impute import SimpleImputer
+from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import TensorDataset, DataLoader
 from imblearn.combine import SMOTEENN
@@ -189,7 +190,7 @@ def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', 
     Load and preprocess the "Credit Card Fraud Detection" dataset from mlg-ulb
 
     :param csv_path: Path to the credit card dataset CSV file
-    :param test_size: Proportion of the dataset to reserve for testing (default is 0.25 for a 25% test set)
+    :param test_size: Proportion of the dataset to reserve for testing
     :param resampling: Resampling method to use (default is None, which means no resampling), options are 'smote' and 'ctgan'
     :return: Preprocessed training and test sets (scaled), along with labels
     :param random_state: The random state to use for resampling
@@ -244,6 +245,47 @@ def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', 
     )
 
     return x_train_scaled, x_test_scaled, y_train, y_test
+
+
+def load_cic_unsw_data(data_path="data/cic-unsw-nb15/data.csv", labels_path="data/cic-unsw-nb15/labels.csv", binary=True,
+                       test_size=0.2, random_state=0):
+    """
+    Load and preprocess the CIC-UNSW-NB15 dataset
+
+    :param data_path: Path to the data CSV file
+    :param labels_path: Path to the labels CSV file
+    :param binary: Whether to convert labels to binary (benign/malicious) or not
+    :param test_size: Proportion of the dataset to reserve for testing
+    :param random_state: The random state to use for splitting the data into train and test sets
+    :return: Preprocessed training and test sets (scaled), along with labels
+    """
+    # Load the data and labels
+    data = pd.read_csv(data_path)
+    labels = pd.read_csv(labels_path)
+
+    # Merge data and labels
+    data['Label'] = labels['Label']
+
+    if binary:
+        # Convert all non-benign (0) labels to 1 for binary classification
+        data['Label'] = data['Label'].apply(lambda it: 0 if it == 0 else 1)
+
+    # Split into features and target
+    x = data.drop(columns=['Label'])
+    y = data['Label']
+
+    # Normalize the features
+    scaler = StandardScaler()
+    x_scaled = scaler.fit_transform(x)
+
+    # Stratified train-test split to keep the class distribution
+    sss = StratifiedShuffleSplit(n_splits=1, test_size=test_size, random_state=random_state)
+    x_train, x_test, y_train, y_test = None, None, None, None
+    for train_index, test_index in sss.split(x_scaled, y):
+        x_train, x_test = x_scaled[train_index], x_scaled[test_index]
+        y_train, y_test = y[train_index], y[test_index]
+
+    return x_train, x_test, y_train, y_test
 
 
 def create_dataloader(x_train, x_test, batch_size=64, use_gpu=False):

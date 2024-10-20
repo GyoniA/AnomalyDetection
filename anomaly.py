@@ -25,8 +25,11 @@ from transformer import TransformerClassifier, train_loop, compute_class_weights
 # model_name = 'mlg-ulb/smote'
 # X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(resampling='smote')
 
-model_name = 'mlg-ulb/ctgan'
-X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(resampling='ctgan')
+# model_name = 'mlg-ulb/ctgan'
+# X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(resampling='ctgan')
+
+model_name = 'cic-unsw-nb15'
+X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_cic_unsw_data(binary=True)
 
 model_path = f'models/{model_name}/'
 
