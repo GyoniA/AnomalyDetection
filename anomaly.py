@@ -181,47 +181,54 @@ with torch.no_grad():
 optimal_threshold, best_f1 = get_optimal_threshold(np.array(all_labels_transformer), np.array(all_probs_transformer))
 preds_transformer = (np.array(all_probs_transformer) >= optimal_threshold).astype(int)
 
+values_format = ".2d"  # The number format to use for the confusion matrix values
 print("\n--- Evaluation Results ---\n")
 plot_path = f'images/{model_name}/'
 # Isolation Forest evaluation
 print("Isolation Forest:")
 print(classification_report(y_test, pred_if))
-cm_if = ConfusionMatrixDisplay.from_predictions(y_test, pred_if, display_labels=["Non-Fraud", "Fraud"])
+cm_if = ConfusionMatrixDisplay.from_predictions(y_test, pred_if, display_labels=["Non-Fraud", "Fraud"],
+                                                values_format=values_format)
 plt.title("Isolation Forest Confusion Matrix")
 plt.savefig(plot_path + 'IFcm.png')
 
 # Local Outlier Factor evaluation
 print("Local Outlier Factor:")
 print(classification_report(y_test, pred_lof))
-cm_lof = ConfusionMatrixDisplay.from_predictions(y_test, pred_lof, display_labels=["Non-Fraud", "Fraud"])
+cm_lof = ConfusionMatrixDisplay.from_predictions(y_test, pred_lof, display_labels=["Non-Fraud", "Fraud"],
+                                                 values_format=values_format)
 plt.title("LOF Confusion Matrix")
 plt.savefig(plot_path + 'LOFcm.png')
 
 # One-Class SVM evaluation
 print("One-Class SVM:")
 print(classification_report(y_test, pred_ocsvm))
-cm_ocsvm = ConfusionMatrixDisplay.from_predictions(y_test, pred_ocsvm, display_labels=["Non-Fraud", "Fraud"])
+cm_ocsvm = ConfusionMatrixDisplay.from_predictions(y_test, pred_ocsvm, display_labels=["Non-Fraud", "Fraud"],
+                                                   values_format=values_format)
 plt.title("One-Class SVM Confusion Matrix")
 plt.savefig(plot_path + 'OCSVMcm.png')
 
 # K-Means evaluation
 print("K-Means:")
 print(classification_report(y_test, pred_kmeans))
-cm_kmeans = ConfusionMatrixDisplay.from_predictions(y_test, pred_kmeans, display_labels=["Non-Fraud", "Fraud"])
+cm_kmeans = ConfusionMatrixDisplay.from_predictions(y_test, pred_kmeans, display_labels=["Non-Fraud", "Fraud"],
+                                                    values_format=values_format)
 plt.title("K-Means Confusion Matrix")
 plt.savefig(plot_path + 'KMcm.png')
 
 # Autoencoder evaluation
 print("Autoencoder (AE):")
 print(classification_report(y_test, pred_ae))
-cm_ae = ConfusionMatrixDisplay.from_predictions(y_test, pred_ae, display_labels=["Non-Fraud", "Fraud"])
+cm_ae = ConfusionMatrixDisplay.from_predictions(y_test, pred_ae, display_labels=["Non-Fraud", "Fraud"],
+                                                values_format=values_format)
 plt.title("Autoencoder Confusion Matrix")
 plt.savefig(plot_path + 'AEcm.png')
 
 # Transformer evaluation
 print("Transformer:")
 print(classification_report(y_test, preds_transformer))
-cm_transformer = ConfusionMatrixDisplay.from_predictions(y_test, preds_transformer, display_labels=["Non-Fraud", "Fraud"])
+cm_transformer = ConfusionMatrixDisplay.from_predictions(y_test, preds_transformer, display_labels=["Non-Fraud", "Fraud"],
+                                                         values_format=values_format)
 plt.title("Transformer Confusion Matrix")
 plt.savefig(plot_path + 'Transformercm.png')
 plt.show()
