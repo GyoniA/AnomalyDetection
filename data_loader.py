@@ -247,7 +247,7 @@ def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', 
     return x_train_scaled, x_test_scaled, y_train, y_test
 
 
-def load_cic_unsw_data(data_path="data/cic-unsw-nb15/data.csv", labels_path="data/cic-unsw-nb15/labels.csv", binary=True,
+def load_cic_unsw_data(data_path="data/cic-unsw-nb15/Data.csv", labels_path="data/cic-unsw-nb15/Label.csv", binary=True,
                        test_size=0.2, random_state=0):
     """
     Load and preprocess the CIC-UNSW-NB15 dataset
@@ -259,6 +259,8 @@ def load_cic_unsw_data(data_path="data/cic-unsw-nb15/data.csv", labels_path="dat
     :param random_state: The random state to use for splitting the data into train and test sets
     :return: Preprocessed training and test sets (scaled), along with labels
     """
+    start_time = datetime.now()
+    print("Loading CIC-UNSW-NB15 dataset...")
     # Load the data and labels
     data = pd.read_csv(data_path)
     labels = pd.read_csv(labels_path)
@@ -284,6 +286,8 @@ def load_cic_unsw_data(data_path="data/cic-unsw-nb15/data.csv", labels_path="dat
     for train_index, test_index in sss.split(x_scaled, y):
         x_train, x_test = x_scaled[train_index], x_scaled[test_index]
         y_train, y_test = y[train_index], y[test_index]
+
+    print(f"Data loaded and processed in {(datetime.now() - start_time).seconds} seconds")
 
     return x_train, x_test, y_train, y_test
 

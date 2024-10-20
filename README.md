@@ -550,6 +550,8 @@ Potential data generation methods:
 - Tune parameters of models (especially Transformer)
 - Use data generation methods to improve model performance
 
+---
+
 ## 6. Week
 
 ### Progress
@@ -577,6 +579,19 @@ Machinery monitoring:
 
 ---
 
+## 7. Week
+
+### Progress
+
+Added the CIC-UNSW-NB15 dataset to the project, which is a network traffic dataset with benign and malicious traffic.[[7]](#7)
+
+
+### Next week's goals
+
+- 
+
+---
+
 ## Sources / References
 - https://medium.com/@reza.shokrzad/6-pivotal-anomaly-detection-methods-from-foundations-to-2023s-best-practices-5f037b530ae6
 - https://arxiv.org/abs/1901.03407
@@ -589,6 +604,7 @@ Machinery monitoring:
 - <a name="5">[5]</a> https://github.com/sdv-dev/SDV
 - <a name="6">[6]</a> https://github.com/joke2k/faker
 - Paper about data generation: https://ieeexplore.ieee.org/document/10072179
+- <a name="7">[7]</a> H. Mohammadian, A. H. Lashkari, A. Ghorbani. “Poisoning and Evasion: Deep Learning-Based NIDS under Adversarial Attacks,” 21st Annual International Conference on Privacy, Security and Trust (PST), 2024.
 
 #### List of some papers that use the "Credit Card Fraud Detection" dataset from mlg-ulb:
 [comment]: <> (TODO: Add better citations, change them to actual references)
