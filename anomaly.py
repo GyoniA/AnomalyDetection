@@ -23,6 +23,7 @@ from transformer import TransformerClassifier, train_loop, compute_class_weights
 model_name = 'cic-unsw-nb15' # TODO: Move these to a config file
 
 model_path = f'models/{model_name}/'
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if __name__ == '__main__':
     # X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_pointe77_data()
@@ -114,7 +115,6 @@ if __name__ == '__main__':
 
     start_time = datetime.now()
     # 5. Autoencoder
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # Define the autoencoder model
     autoencoder_model = ae.Autoencoder(input_dim=X_train_scaled.shape[1])
     ae_model_path = model_path + 'autoencoder.pth'
