@@ -4,22 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ model_name }} Results</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Results for {{ model_name }}</h1>
+<body class="container">
+    <h2 class="center-align">Results for {{ model_name }}</h2>
 
-    <h2>Classification Report</h2>
-    <pre>{{ classification_rep }}</pre>
+    <div class="section">
+        <h5>Classification Report</h5>
+        <pre class="grey lighten-4" style="padding: 15px;">{{ classification_rep }}</pre>
+    </div>
 
-    <h2>Confusion Matrix</h2>
-    <img src="/{{ cm_path }}" alt="Confusion Matrix">
+    <div class="section">
+        <h5>Confusion Matrix</h5>
+        <img src="/{{ cm_path }}" alt="Confusion Matrix" class="responsive-img">
+    </div>
 
-    <h2>Precision-Recall Curve</h2>
-    <img src="/{{ pr_path }}" alt="Precision-Recall Curve">
+    <div class="section">
+        <h5>Precision-Recall Curve</h5>
+        <img src="/{{ pr_path }}" alt="Precision-Recall Curve" class="responsive-img">
+    </div>
 
-    <h2>ROC Curve</h2>
-    <img src="/{{ roc_path }}" alt="ROC Curve">
+    <div class="section">
+        <h5>ROC Curve</h5>
+        <img src="/{{ roc_path }}" alt="ROC Curve" class="responsive-img">
+    </div>
 
-    <a href="/">Back to Model Selection</a>
+    <div class="center-align">
+        <a href="/" class="btn waves-effect waves-light">Back to Model Selection</a>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
