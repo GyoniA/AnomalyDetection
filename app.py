@@ -145,15 +145,18 @@ def evaluate():
             predictions = get_predictions(model, model_name)
             model_preds[model_name] = predictions
             cm_paths[model_name] = generate_individual_plots(Y_test, predictions, model_name)
-            classification_reports[model_name] = classification_report(Y_test, predictions)
+            report_dict = classification_report(Y_test, predictions, output_dict=True)
+            classification_reports[model_name] = report_dict
 
     pr_path, roc_path = generate_combined_pr_roc_curves(Y_test, model_preds)
 
-    return render_template('results.html',
-                           cm_paths=cm_paths,
-                           classification_reports=classification_reports,
-                           pr_path=pr_path,
-                           roc_path=roc_path)
+    return render_template(
+        'results.html',
+        cm_paths=cm_paths,
+        classification_reports=classification_reports,
+        pr_path=pr_path,
+        roc_path=roc_path
+    )
 
 
 
