@@ -3,30 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ model_name }} Results</title>
+    <title>Evaluation Results</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
 </head>
 <body class="container">
-    <h2 class="center-align">Results for {{ model_name }}</h2>
+    <h2 class="center-align">Model Evaluation Results</h2>
 
-    <div class="section">
-        <h5>Classification Report</h5>
-        <pre class="grey lighten-4" style="padding: 15px;">{{ classification_rep }}</pre>
+    <div class="row">
+        {% for model_name, cm_path in cm_paths.items() %}
+            <div class="col s12 m6">
+                <h5>{{ model_name }}</h5>
+                <img src="/{{ cm_path }}" alt="{{ model_name }} Confusion Matrix" class="responsive-img">
+                <h5>{{ model_name }} Classification Report</h5>
+                <pre>{{ classification_reports[model_name] }}</pre>
+            </div>
+        {% endfor %}
     </div>
 
-    <div class="section">
-        <h5>Confusion Matrix</h5>
-        <img src="/{{ cm_path }}" alt="Confusion Matrix" class="responsive-img">
-    </div>
-
-    <div class="section">
-        <h5>Precision-Recall Curve</h5>
-        <img src="/{{ pr_path }}" alt="Precision-Recall Curve" class="responsive-img">
-    </div>
-
-    <div class="section">
-        <h5>ROC Curve</h5>
-        <img src="/{{ roc_path }}" alt="ROC Curve" class="responsive-img">
+    <h4 class="center-align">Precision-Recall and ROC Curves</h4>
+    <div class="row center-align">
+        <div class="col s6">
+            <img src="/{{ pr_path }}" alt="Precision-Recall Curve" class="responsive-img">
+        </div>
+        <div class="col s6">
+            <img src="/{{ roc_path }}" alt="ROC Curve" class="responsive-img">
+        </div>
     </div>
 
     <div class="center-align">

@@ -76,40 +76,52 @@ def get_predictions(model, model_name):
     return predictions
 
 
-def generate_plots(y_test, predictions, model_name):
+def generate_individual_plots(y_test, predictions, model_name):
     """
-    Generate and save confusion matrix, PR, and ROC plots, for the given model.
+    Generate and save confusion matrix for the given model.
     """
-    # Confusion Matrix
+    cm_path = os.path.join(PLOT_DIR, f'{model_name}_cm.png')
     ConfusionMatrixDisplay.from_predictions(y_test, predictions, display_labels=["Non-Fraud", "Fraud"], values_format='d')
     plt.title(f'{model_name} Confusion Matrix')
-    cm_path = os.path.join(PLOT_DIR, f'{model_name}_cm.png')
     plt.savefig(cm_path)
     plt.close()
+    return cm_path
+
+
+def generate_combined_pr_roc_curves(y_test, model_preds):
+    """
+    Generate and save combined precision-recall and ROC curves for all models.
+    """
+    pr_path = os.path.join(PLOT_DIR, 'combined_pr.png')
+    roc_path = os.path.join(PLOT_DIR, 'combined_roc.png')
 
     # Precision-Recall Curve
-    precision, recall, _ = precision_recall_curve(y_test, predictions)
-    pr_auc = auc(recall, precision)
-    plt.plot(recall, precision, marker='.', label=f'{model_name} AUPRC = {pr_auc:.2f}')
+    plt.figure(figsize=(8, 6))
+    for model_name, predictions in model_preds.items():
+        precision, recall, _ = precision_recall_curve(y_test, predictions)
+        pr_auc = auc(recall, precision)
+        plt.plot(recall, precision, marker='.', label=f'{model_name} AUPRC = {pr_auc:.2f}')
     plt.xlabel('Recall')
     plt.ylabel('Precision')
-    plt.title(f'{model_name} Precision-Recall Curve')
-    pr_path = os.path.join(PLOT_DIR, f'{model_name}_pr.png')
+    plt.title('Precision-Recall Curve')
+    plt.legend(loc="best")
     plt.savefig(pr_path)
     plt.close()
 
     # ROC Curve
-    fpr, tpr, _ = roc_curve(y_test, predictions)
-    roc_auc = auc(fpr, tpr)
-    plt.plot(fpr, tpr, label=f'{model_name} AUC = {roc_auc:.2f}')
+    plt.figure(figsize=(8, 6))
+    for model_name, predictions in model_preds.items():
+        fpr, tpr, _ = roc_curve(y_test, predictions)
+        roc_auc = auc(fpr, tpr)
+        plt.plot(fpr, tpr, label=f'{model_name} AUC = {roc_auc:.2f}')
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title(f'{model_name} ROC Curve')
-    roc_path = os.path.join(PLOT_DIR, f'{model_name}_roc.png')
+    plt.title('ROC Curve')
+    plt.legend(loc="best")
     plt.savefig(roc_path)
     plt.close()
 
-    return cm_path, pr_path, roc_path
+    return pr_path, roc_path
 
 
 @app.route('/')
@@ -122,19 +134,27 @@ def evaluate():
     """
     Evaluate the selected model on the test dataset and display the results.
     """
-    model_name = request.form.get('model')
-    model = load_model(model_name)
+    selected_models = request.form.getlist('models')
+    model_preds = {}
+    cm_paths = {}
+    classification_reports = {}
 
-    if model is None:
-        return "Model not found!", 404
+    for model_name in selected_models:
+        model = load_model(model_name)
+        if model:
+            predictions = get_predictions(model, model_name)
+            model_preds[model_name] = predictions
+            cm_paths[model_name] = generate_individual_plots(Y_test, predictions, model_name)
+            classification_reports[model_name] = classification_report(Y_test, predictions)
 
-    predictions = get_predictions(model, model_name)
+    pr_path, roc_path = generate_combined_pr_roc_curves(Y_test, model_preds)
 
-    cm_path, pr_path, roc_path = generate_plots(Y_test, predictions, model_name)
-    classification_rep = classification_report(Y_test, predictions)
+    return render_template('results.html',
+                           cm_paths=cm_paths,
+                           classification_reports=classification_reports,
+                           pr_path=pr_path,
+                           roc_path=roc_path)
 
-    return render_template('results.html', model_name=model_name, classification_rep=classification_rep,
-                           cm_path=cm_path, pr_path=pr_path, roc_path=roc_path)
 
 
 if __name__ == '__main__':

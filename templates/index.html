@@ -7,16 +7,18 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
 </head>
 <body class="container">
-    <h2 class="center-align">Select a Model to Evaluate</h2>
+    <h2 class="center-align">Select Models to Evaluate</h2>
     <div class="row">
         <form action="/evaluate" method="POST" class="col s12 m6 offset-m3">
             <div class="input-field">
-                <label for="model" style="display: block; font-weight: bold;"></label>
-                <select name="model" id="model" class="browser-default" style="margin-top: 8px;">
-                    {% for model in models %}
-                        <option value="{{ model }}">{{ model }}</option>
-                    {% endfor %}
-                </select>
+                {% for model in models %}
+                    <div class="checkbox-item" style="margin-bottom: 10px;">
+                        <label>
+                            <input type="checkbox" name="models" value="{{ model }}">
+                            <span>{{ model }}</span>
+                        </label>
+                    </div>
+                {% endfor %}
             </div>
             <div class="center-align">
                 <button type="submit" class="btn waves-effect waves-light">Evaluate</button>
@@ -24,11 +26,5 @@
         </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let elems = document.querySelectorAll('select');
-            M.FormSelect.init(elems);
-        });
-    </script>
 </body>
 </html>
