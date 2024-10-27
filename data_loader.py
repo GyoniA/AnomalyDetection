@@ -185,6 +185,36 @@ def ctgan_resample(train_data, y_train, target_column, random_state, desired_fra
     return x_train, y_train
 
 
+def get_ctgan_generator(x_train, y_train, epochs=100, model_name='cic-unsw-nb15'):
+    """
+    Get a CTGAN generator for synthetic data generation.
+
+    :param x_train: Training features
+    :param y_train: Training labels
+    :param epochs: Number of epochs for the CTGAN model
+    :param model_name: Name of the dataset
+    :return: CTGAN generator
+    """
+    start_time = datetime.now()
+    model_path = f'models/generators/{model_name}/ctgan_{epochs}.pkl'
+    if os.path.exists(model_path):
+        print(f"\nLoading CTGAN from {model_path}...")
+        ctgan = joblib.load(model_path)
+        print(f"CTGAN loaded in {(datetime.now() - start_time).seconds} seconds.")
+        return ctgan
+    # Convert the data to a Pandas DataFrame
+    x_train = pd.DataFrame(x_train)
+    y_train = pd.DataFrame(y_train)
+    # Add the y_train label column to x_train
+    train_data = pd.concat([x_train, y_train], axis=1)
+    metadata = Metadata.detect_from_dataframe(train_data)
+    ctgan = CTGANSynthesizer(metadata=metadata, epochs=epochs, verbose=True)
+    ctgan.fit(train_data)
+    joblib.dump(ctgan, model_path)
+    print(f"CTGAN training completed in {(datetime.now() - start_time).seconds} seconds, weights saved to {model_path}")
+    return ctgan
+
+
 def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', test_size=0.25, resampling=None, random_state=0):
     """
     Load and preprocess the "Credit Card Fraud Detection" dataset from mlg-ulb

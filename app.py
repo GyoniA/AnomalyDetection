@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay, precision_recall_curve, roc_curve, auc
 import data_loader
 from anomaly import model_path, device
+from anomaly import model_name as used_dataset
 import auto_encoder as ae
 from transformer import TransformerClassifier, get_optimal_threshold
 
@@ -15,6 +16,7 @@ app = Flask(__name__)
 X_train_scaled, X_test_scaled, Y_train, Y_test = data_loader.load_cic_unsw_data(binary=True)
 train_loader, test_loader = data_loader.create_dataloader(X_train_scaled, X_test_scaled, use_gpu=torch.cuda.is_available())
 class_train_loader, class_test_loader = data_loader.create_classification_dataloader(X_train_scaled, X_test_scaled, Y_train, Y_test)
+data_generator = data_loader.get_ctgan_generator(X_train_scaled, Y_train, model_name=used_dataset)
 
 MODEL_PATHS = {
     'Isolation Forest': f'{model_path}/iso_forest.pkl',
