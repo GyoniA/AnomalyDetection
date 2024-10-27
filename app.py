@@ -18,6 +18,7 @@ X_train_scaled, X_test_scaled, Y_train, Y_test = data_loader.load_cic_unsw_data(
 train_loader, test_loader = data_loader.create_dataloaders(X_train_scaled, X_test_scaled, use_gpu=torch.cuda.is_available())
 class_train_loader, class_test_loader = data_loader.create_classification_dataloaders(X_train_scaled, X_test_scaled, Y_train, Y_test)
 data_generator = data_loader.get_ctgan_generator(X_train_scaled, Y_train, model_name=used_dataset)
+label_column_name = data_loader.cic_unsw_label_name
 
 MODEL_PATHS = {
     'Isolation Forest': f'{model_path}/iso_forest.pkl',
@@ -49,14 +50,26 @@ def load_model(model_name):
     return None
 
 
-def get_predictions(model, model_name):
+def predict(model, model_name, x, y, loader = None, class_loader = None):
     """
-    Get sample predictions for a given model, with the test dataset.
+    Get predictions for a given model and input data.
 
+    :param model: The model to use for predictions
+    :param model_name: The name of the model
+    :param x: The features to predict
+    :param y: The labels for the features
+    :param loader: The data loader to use for the input data (optional)
+    :param class_loader: The classification data loader to use for the input data (optional)
     :return: Predictions (array of floats)
     """
+    if loader is None or class_loader is None:
+        x_loader = data_loader.create_dataloader(x, batch_size=1, shuffle=False, use_gpu=torch.cuda.is_available())
+        x_class_loader = data_loader.create_classification_dataloader(x, y, batch_size=1, shuffle=False)
+    else:
+        x_loader = loader
+        x_class_loader = class_loader
     if model_name == 'Autoencoder':
-        reconstruction_error = ae.get_reconstruction_error(model, test_loader, device)
+        reconstruction_error = ae.get_reconstruction_error(model, x_loader, device)
         # Set a threshold for anomaly detection
         threshold = np.percentile(reconstruction_error, 95)
         # Get predictions based on the threshold
@@ -67,7 +80,7 @@ def get_predictions(model, model_name):
         all_labels_transformer = []
         all_probs_transformer = []
         with torch.no_grad():
-            for inputs, labels in class_test_loader:
+            for inputs, labels in x_class_loader:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
 
@@ -80,7 +93,7 @@ def get_predictions(model, model_name):
         optimal_threshold, best_f1 = get_optimal_threshold(np.array(all_labels_transformer), np.array(all_probs_transformer))
         preds_transformer = (np.array(all_probs_transformer) >= optimal_threshold).astype(int)
         return preds_transformer
-    predictions = model.predict(X_test_scaled)
+    predictions = model.predict(x)
     predictions = np.where(predictions == 1, 0, 1)  # Convert 1 (normal) to 0 and -1 (anomaly) to 1
     return predictions
 
@@ -151,7 +164,7 @@ def evaluate():
     for model_name in selected_models:
         model = load_model(model_name)
         if model:
-            predictions = get_predictions(model, model_name)
+            predictions = predict(model, model_name, X_test_scaled, Y_test, test_loader, class_test_loader)
             model_preds[model_name] = predictions
             cm_paths[model_name] = generate_individual_plots(Y_test, predictions, model_name)
             report_dict = classification_report(Y_test, predictions, output_dict=True)

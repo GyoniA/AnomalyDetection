@@ -276,6 +276,7 @@ def load_mlg_ulb_data(csv_path='data/mlg-ulb/credit-card-fraud/creditcard.csv', 
 
     return x_train_scaled, x_test_scaled, y_train, y_test
 
+cic_unsw_label_name = 'Label'  # TODO: Move this to a config file
 
 def load_cic_unsw_data(data_path="data/cic-unsw-nb15/Data.csv", labels_path="data/cic-unsw-nb15/Label.csv", binary=True,
                        test_size=0.2, random_state=0):
@@ -296,15 +297,15 @@ def load_cic_unsw_data(data_path="data/cic-unsw-nb15/Data.csv", labels_path="dat
     labels = pd.read_csv(labels_path)
 
     # Merge data and labels
-    data['Label'] = labels['Label']
+    data[cic_unsw_label_name] = labels[cic_unsw_label_name]
 
     if binary:
         # Convert all non-benign (0) labels to 1 for binary classification
-        data['Label'] = data['Label'].apply(lambda it: 0 if it == 0 else 1)
+        data[cic_unsw_label_name] = data[cic_unsw_label_name].apply(lambda it: 0 if it == 0 else 1)
 
     # Split into features and target
-    x = data.drop(columns=['Label'])
-    y = data['Label']
+    x = data.drop(columns=[cic_unsw_label_name])
+    y = data[cic_unsw_label_name]
 
     # Normalize the features
     scaler = StandardScaler()
