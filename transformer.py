@@ -7,7 +7,7 @@ import math
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, auc, precision_recall_curve
 from sklearn.utils.class_weight import compute_class_weight
 
-from data_loader import load_mlg_ulb_data, create_classification_dataloader
+from data_loader import load_mlg_ulb_data, create_classification_dataloaders
 
 
 class PositionalEncoding(nn.Module):
@@ -228,8 +228,8 @@ def main():
     x_train_scaled, x_test_scaled, y_train, y_test = load_mlg_ulb_data(apply_smote_enn=True)
 
     batch_size = 64
-    train_loader, test_loader = create_classification_dataloader(x_train_scaled, x_test_scaled, y_train, y_test,
-                                                                 batch_size=batch_size)
+    train_loader, test_loader = create_classification_dataloaders(x_train_scaled, x_test_scaled, y_train, y_test,
+                                                                  batch_size=batch_size)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f'Using device: {device}')

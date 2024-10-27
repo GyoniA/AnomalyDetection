@@ -32,9 +32,9 @@ if __name__ == '__main__':
     # X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(resampling='ctgan')
     X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_cic_unsw_data(binary=True)
 
-    train_loader, test_loader = data_loader.create_dataloader(X_train_scaled, X_test_scaled, use_gpu=torch.cuda.is_available())
+    train_loader, test_loader = data_loader.create_dataloaders(X_train_scaled, X_test_scaled, use_gpu=torch.cuda.is_available())
 
-    class_train_loader, class_test_loader = data_loader.create_classification_dataloader(X_train_scaled, X_test_scaled, y_train, y_test)
+    class_train_loader, class_test_loader = data_loader.create_classification_dataloaders(X_train_scaled, X_test_scaled, y_train, y_test)
 
     # Set the contamination parameter based on the train dataset (percentage of fraud cases)
     contamination = 0.2 if model_name == 'cic-unsw-nb15' else y_train.sum() / len(y_train)

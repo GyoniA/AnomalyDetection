@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import joblib
 import numpy as np
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay, precision_recall_curve, roc_curve, auc
+
 import data_loader
 from anomaly import model_path, device
 from anomaly import model_name as used_dataset
@@ -14,8 +15,8 @@ from transformer import TransformerClassifier, get_optimal_threshold
 app = Flask(__name__)
 
 X_train_scaled, X_test_scaled, Y_train, Y_test = data_loader.load_cic_unsw_data(binary=True)
-train_loader, test_loader = data_loader.create_dataloader(X_train_scaled, X_test_scaled, use_gpu=torch.cuda.is_available())
-class_train_loader, class_test_loader = data_loader.create_classification_dataloader(X_train_scaled, X_test_scaled, Y_train, Y_test)
+train_loader, test_loader = data_loader.create_dataloaders(X_train_scaled, X_test_scaled, use_gpu=torch.cuda.is_available())
+class_train_loader, class_test_loader = data_loader.create_classification_dataloaders(X_train_scaled, X_test_scaled, Y_train, Y_test)
 data_generator = data_loader.get_ctgan_generator(X_train_scaled, Y_train, model_name=used_dataset)
 
 MODEL_PATHS = {
@@ -47,7 +48,13 @@ def load_model(model_name):
         return joblib.load(path)
     return None
 
+
 def get_predictions(model, model_name):
+    """
+    Get sample predictions for a given model, with the test dataset.
+
+    :return: Predictions (array of floats)
+    """
     if model_name == 'Autoencoder':
         reconstruction_error = ae.get_reconstruction_error(model, test_loader, device)
         # Set a threshold for anomaly detection
@@ -159,7 +166,6 @@ def evaluate():
         pr_path=pr_path,
         roc_path=roc_path
     )
-
 
 
 if __name__ == '__main__':

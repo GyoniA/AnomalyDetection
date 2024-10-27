@@ -328,24 +328,50 @@ def load_cic_unsw_data(data_path="data/cic-unsw-nb15/Data.csv", labels_path="dat
     return x_train, x_test, y_train, y_test
 
 
-def create_dataloader(x_train, x_test, batch_size=64, use_gpu=False):
+def create_dataloader(x, batch_size=64, shuffle=True, use_gpu=False):
+    """
+    Convert NumPy array to PyTorch tensor and then to DataLoader
+
+    :param x: Features
+    :param batch_size: Batch size for the DataLoader
+    :param shuffle: Whether to shuffle the data (Should be true for Train and False for Test)
+    :param use_gpu: Whether to use GPU for training
+    :return: DataLoader
+    """
+    x_tensor = torch.tensor(x, dtype=torch.float32)
+    dataset = TensorDataset(x_tensor)
+    device = 'cuda' if use_gpu and torch.cuda.is_available() else 'cpu'
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, pin_memory=use_gpu, pin_memory_device=device)
+    return dataloader
+
+
+def create_dataloaders(x_train, x_test, batch_size=64, use_gpu=False):
     """
     Convert NumPy arrays to PyTorch tensors and then to DataLoaders
     """
-    x_train_tensor = torch.tensor(x_train, dtype=torch.float32)
-    x_test_tensor = torch.tensor(x_test, dtype=torch.float32)
-
-    train_dataset = TensorDataset(x_train_tensor)
-    test_dataset = TensorDataset(x_test_tensor)
-
-    device = 'cuda' if use_gpu and torch.cuda.is_available() else 'cpu'
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, pin_memory=use_gpu, pin_memory_device=device)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, pin_memory=use_gpu, pin_memory_device=device)
-
+    train_loader = create_dataloader(x_train, batch_size, shuffle=True, use_gpu=use_gpu)
+    test_loader = create_dataloader(x_test, batch_size, shuffle=False, use_gpu=use_gpu)
     return train_loader, test_loader
 
 
-def create_classification_dataloader(x_train, x_test, y_train, y_test, batch_size=64):
+def create_classification_dataloader(x, y: pd.Series, batch_size=64, shuffle=True):
+    """
+    Convert NumPy arrays to PyTorch tensors and then to DataLoaders for classification.
+
+    :param x: Features
+    :param y: Labels
+    :param batch_size: Batch size for the DataLoader
+    :param shuffle: Whether to shuffle the data (Should be true for Train and False for Test)
+    :return: DataLoader
+    """
+    x_tensor = torch.tensor(x, dtype=torch.float32)
+    y_tensor = torch.tensor(y.values, dtype=torch.float32)  # Assuming y is a Pandas Series
+    dataset = TensorDataset(x_tensor, y_tensor)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
+    return dataloader
+
+
+def create_classification_dataloaders(x_train, x_test, y_train, y_test, batch_size=64):
     """
     Convert NumPy arrays to PyTorch tensors and then to DataLoaders for classification.
 
@@ -356,16 +382,7 @@ def create_classification_dataloader(x_train, x_test, y_train, y_test, batch_siz
     :param batch_size: Batch size for DataLoaders
     :return: Training and test DataLoaders
     """
-    x_train_tensor = torch.tensor(x_train, dtype=torch.float32)
-    y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32)  # Assuming y_train is a Pandas Series
-    x_test_tensor = torch.tensor(x_test, dtype=torch.float32)
-    y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32)
-
-    train_dataset = TensorDataset(x_train_tensor, y_train_tensor)
-    test_dataset = TensorDataset(x_test_tensor, y_test_tensor)
-
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-
+    train_loader = create_classification_dataloader(x_train, y_train, batch_size, shuffle=True)
+    test_loader = create_classification_dataloader(x_test, y_test, batch_size, shuffle=False)
     return train_loader, test_loader
 
