@@ -710,6 +710,18 @@ I also added a CTGAN based data generator, that I can use to approximate fresh l
 
 I started working on the frontend display of the live data prediction chart, but it is not fully functional yet.
 
+Sample images of the Flask frontend:  
+Initial page:  
+![Initial page](images/documentation/IndexPage.png)
+
+Comparison results page:
+
+![Comparison results page](images/documentation/ResultsPage.png)
+
+Prototype of the live data prediction page:
+
+![Live data prediction page](images/documentation/LiveMonitorPage.png)
+
 ### Next week's goals
 
 - Complete the frontend display of the live data prediction chart
