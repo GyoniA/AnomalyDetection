@@ -695,6 +695,28 @@ Added an initial Flask based frontend for the project, which allows the user to 
 
 ---
 
+## 8. Week
+
+### Progress
+
+I improved the frontend part of the project:
+- Changed to material design
+- Added the option to compare results of different models
+- Added table for classification report
+- Added loading animation while the models are predicting  
+
+Cleaned up data loader creation and usage.  
+I also added a CTGAN based data generator, that I can use to approximate fresh live data.  
+
+I started working on the frontend display of the live data prediction chart, but it is not fully functional yet.
+
+### Next week's goals
+
+- Complete the frontend display of the live data prediction chart
+- Look into other simple (not deep learning) architectures for anomaly detection that can work well with high-dimensional data, for comparison with the Transformer model
+
+---
+
 ## Sources / References
 - https://medium.com/@reza.shokrzad/6-pivotal-anomaly-detection-methods-from-foundations-to-2023s-best-practices-5f037b530ae6
 - https://arxiv.org/abs/1901.03407

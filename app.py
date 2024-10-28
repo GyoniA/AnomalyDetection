@@ -1,15 +1,18 @@
-import torch
-from flask import Flask, render_template, request
+import math
 import os
-import matplotlib.pyplot as plt
+
 import joblib
+import matplotlib.pyplot as plt
 import numpy as np
+import torch
+from flask import Flask, render_template, request, jsonify
+from pandas import Series
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay, precision_recall_curve, roc_curve, auc
 
-import data_loader
-from anomaly import model_path, device
-from anomaly import model_name as used_dataset
 import auto_encoder as ae
+import data_loader
+from anomaly import model_name as used_dataset
+from anomaly import model_path, device
 from transformer import TransformerClassifier, get_optimal_threshold
 
 app = Flask(__name__)
@@ -29,24 +32,35 @@ MODEL_PATHS = {
     'Transformer': f'{model_path}/transformer.pth',
 }
 
+loaded_models = {}
+
 PLOT_DIR = 'static/plots/'
 os.makedirs(PLOT_DIR, exist_ok=True)
 
 
 def load_model(model_name):
+    """
+    Loads a model from the model paths, caches it in memory after the first time it's loaded.
+    """
+    if model_name in loaded_models:
+        return loaded_models[model_name]
     path = MODEL_PATHS.get(model_name)
     if model_name == 'Autoencoder':
         model = ae.Autoencoder(input_dim=X_train_scaled.shape[1])
         model.load_state_dict(torch.load(path, map_location=device))
         model = model.to(device)
+        loaded_models[model_name] = model
         return model
     if model_name == 'Transformer':
         model = TransformerClassifier(input_dim=X_train_scaled.shape[1])
         model.load_state_dict(torch.load(path, map_location=device))
         model = model.to(device)
+        loaded_models[model_name] = model
         return model
     if path and os.path.exists(path):
-        return joblib.load(path)
+        model = joblib.load(path)
+        loaded_models[model_name] = model
+        return model
     return None
 
 
@@ -179,6 +193,38 @@ def evaluate():
         pr_path=pr_path,
         roc_path=roc_path
     )
+
+
+@app.route('/generate_live_data', methods=['POST'])
+def generate_live_data():
+    """
+    Generate a new data point and run predictions on the selected models.
+    """
+    synthetic_data = data_generator.sample(1)
+    # Replace nan values with 0.0
+    synthetic_data = synthetic_data.fillna(0.0)
+    synthetic_x = synthetic_data.drop(columns=[label_column_name])
+    original_class = synthetic_data[label_column_name].values[0]
+    synthetic_x = synthetic_x.to_numpy()
+    original_class = original_class if not math.isnan(original_class) else 0
+    y = Series([original_class])
+    selected_models = request.json.get('selected_models')
+
+    predictions = {}
+    for model_name in selected_models:
+        model = load_model(model_name)
+        if model:
+            pred = predict(model, model_name, x=synthetic_x, y=y)
+            predictions[model_name] = pred[0]
+    return jsonify({
+        'original_class': int(original_class),
+        'predictions': predictions
+    })
+
+
+@app.route('/live_monitor')
+def live_monitor():
+    return render_template('live_monitor.html', models=list(MODEL_PATHS.keys()))
 
 
 if __name__ == '__main__':

@@ -39,6 +39,9 @@
             </div>
         </form>
     </div>
+    <div class="center-align" style="margin-top: 20px;">
+        <a href="/live_monitor" class="btn waves-effect waves-light">Real-Time Test</a>
+    </div>
 
     <!-- Loading animation -->
     <div class="loader-container" id="loader">
@@ -57,6 +60,10 @@
             // Show loader and disable the button
             document.getElementById('loader').style.display = 'flex';
             document.getElementById('evaluateBtn').disabled = true;
+        });
+        document.getElementById('liveMonitorBtn').addEventListener('click', function() {
+            document.getElementById('loader').style.display = 'flex';
+            document.getElementById('liveMonitorBtn').disabled = true;
         });
     </script>
 </body>
