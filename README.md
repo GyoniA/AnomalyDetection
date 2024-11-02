@@ -729,6 +729,23 @@ Prototype of the live data prediction page:
 
 ---
 
+## 9. Week
+
+### Progress
+
+I made the live prediction chart work with the data generator.  
+In this new version I switched to a line chart, to make the models easier to distinguish.  
+I indicate whether it's an anomaly or not by changing the color of the point (red for anomalies, green for benign data).  
+
+![Fixed live prediction chart](images/documentation/LiveMonitorPageFixed.png)
+
+### Next week's goals
+
+-
+
+---
+
+
 ## Sources / References
 - https://medium.com/@reza.shokrzad/6-pivotal-anomaly-detection-methods-from-foundations-to-2023s-best-practices-5f037b530ae6
 - https://arxiv.org/abs/1901.03407
