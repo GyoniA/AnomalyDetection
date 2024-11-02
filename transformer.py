@@ -153,7 +153,7 @@ def get_optimal_threshold(y_true: np.ndarray, y_probs: np.ndarray):
     best_f1 = 0
     for threshold in np.linspace(0.1, 0.9, 81):
         preds = (y_probs >= threshold).astype(int)
-        f1 = f1_score(y_true, preds)
+        f1 = f1_score(y_true, preds, zero_division=0)
         if f1 > best_f1:
             best_f1 = f1
             best_threshold = threshold

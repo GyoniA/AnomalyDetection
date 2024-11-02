@@ -45,7 +45,7 @@
         // Initialize Chart.js
         const ctx = document.getElementById('liveChart').getContext('2d');
         const liveChart = new Chart(ctx, {
-            type: 'scatter',
+            type: 'line',
             data: {
                 datasets: []
             },
@@ -58,12 +58,19 @@
         });
 
         // Helper function to initialize or reset dataset for each model
-        function initModelDataset(model) {
+        function initModelDataset(model, lineColor) {
             liveChart.data.datasets.push({
                 label: model,
                 data: [],
-                backgroundColor: chartColors.benign, // default to benign color
-                pointRadius: 5,
+                backgroundColor: lineColor,
+                borderColor: lineColor,
+                pointBackgroundColor: function(context) {
+                    return context.raw && context.raw.pointBackgroundColor ? context.raw.pointBackgroundColor : chartColors.benign;
+                },
+                pointBorderColor: function(context) {
+                    return context.raw && context.raw.pointBorderColor ? context.raw.pointBorderColor : chartColors.benign;
+                },
+                pointRadius: 7,
                 pointStyle: 'circle'
             });
         }
@@ -72,6 +79,14 @@
         function getSelectedModels() {
             const checkboxes = document.querySelectorAll('input[name="models"]:checked');
             return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        // Function to generate a distinct color for each model
+        function getColor(index, totalModels) {
+            const minHue = 170;
+            const maxHue = 280;
+            const hue = minHue + ((maxHue - minHue) * (index / totalModels));
+            return `hsl(${hue}, 90%, 50%)`;
         }
 
         // Function to start monitoring
@@ -83,7 +98,8 @@
 
             // Reset data
             liveChart.data.datasets = [];
-            selectedModels.forEach(model => initModelDataset(model));
+            initModelDataset('Original', getColor(0, selectedModels.length));
+            selectedModels.forEach((model, index) => initModelDataset(model, getColor(index + 1, selectedModels.length)));
             liveChart.update();
 
             // Poll the live data endpoint every 2 seconds
@@ -96,11 +112,15 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    const originalColor = data.original_class === 1 ? chartColors.anomaly : chartColors.benign;
+                    const originalPoint = { x: timestamp, y: 0, pointBorderColor: originalColor, pointBackgroundColor: originalColor };
+                    liveChart.data.datasets[0].data.push(originalPoint);
                     selectedModels.forEach((model, index) => {
+                        const y = index + 1;
                         const isAnomaly = data.predictions[model] === 1;
                         const color = isAnomaly ? chartColors.anomaly : chartColors.benign;
-                        const point = { x: timestamp, y: index, backgroundColor: color };
-                        liveChart.data.datasets[index].data.push(point);
+                        const point = { x: timestamp, y: y, pointBorderColor: color, pointBackgroundColor: color };
+                        liveChart.data.datasets[y].data.push(point);
                     });
                     liveChart.update();
                     timestamp += 2; // increment timestamp by 2 seconds

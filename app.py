@@ -181,7 +181,7 @@ def evaluate():
             predictions = predict(model, model_name, X_test_scaled, Y_test, test_loader, class_test_loader)
             model_preds[model_name] = predictions
             cm_paths[model_name] = generate_individual_plots(Y_test, predictions, model_name)
-            report_dict = classification_report(Y_test, predictions, output_dict=True)
+            report_dict = classification_report(Y_test, predictions, output_dict=True, zero_division=0)
             classification_reports[model_name] = report_dict
 
     pr_path, roc_path = generate_combined_pr_roc_curves(Y_test, model_preds)
