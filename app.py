@@ -206,7 +206,7 @@ def generate_live_data():
     synthetic_x = synthetic_data.drop(columns=[label_column_name])
     original_class = synthetic_data[label_column_name].values[0]
     synthetic_x = synthetic_x.to_numpy()
-    original_class = original_class if not math.isnan(original_class) else 0
+    original_class = int(original_class) if not math.isnan(original_class) else 0
     y = Series([original_class])
     selected_models = request.json.get('selected_models')
 
@@ -215,9 +215,9 @@ def generate_live_data():
         model = load_model(model_name)
         if model:
             pred = predict(model, model_name, x=synthetic_x, y=y)
-            predictions[model_name] = pred[0]
+            predictions[model_name] = int(pred[0]) if not math.isnan(pred[0]) else 0
     return jsonify({
-        'original_class': int(original_class),
+        'original_class': original_class,
         'predictions': predictions
     })
 
