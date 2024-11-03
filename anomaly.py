@@ -8,7 +8,7 @@ import torch
 from sklearn.cluster import KMeans
 from sklearn.ensemble import IsolationForest
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay, precision_recall_curve, roc_curve, auc
-from sklearn.neighbors import LocalOutlierFactor
+from sklearn.neighbors import LocalOutlierFactor, NearestNeighbors
 from sklearn.svm import OneClassSVM
 from torch import nn
 
@@ -183,6 +183,28 @@ if __name__ == '__main__':
     optimal_threshold, best_f1 = get_optimal_threshold(np.array(all_labels_transformer), np.array(all_probs_transformer))
     preds_transformer = (np.array(all_probs_transformer) >= optimal_threshold).astype(int)
 
+    print(f"Transformer prediction shape: {preds_transformer.shape}")
+
+    start_time = datetime.now()
+    # 7. One-Class Nearest Neighbors
+    # Check if the model has already been trained
+    OCNN_model_path = model_path + 'ocnn.pkl'
+    if os.path.exists(OCNN_model_path):
+        print(f"\nLoading One-Class Nearest Neighbors from {OCNN_model_path}...")
+        ocnn = joblib.load(OCNN_model_path)
+        print(f"One-Class Nearest Neighbors loaded in {(datetime.now() - start_time).seconds} seconds")
+    else:
+        print("\nTraining One-Class Nearest Neighbors...")
+        ocnn = NearestNeighbors(n_neighbors=5, algorithm='auto', metric='minkowski', p=2, n_jobs=-1)
+        ocnn.fit(X_train_scaled)
+        # Save the model
+        joblib.dump(ocnn, OCNN_model_path)
+        print(f"One-Class Nearest Neighbors training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
+    ocnn_distances, _ = ocnn.kneighbors(X_test_scaled)
+    mean_distances = np.mean(ocnn_distances, axis=1)
+    ocnn_threshold = np.percentile(mean_distances, 95)
+    pred_ocnn = np.where(mean_distances > ocnn_threshold, 1, 0)
+
     values_format = "d"  # The number format to use for the confusion matrix values
     print("\n--- Evaluation Results ---\n")
     plot_path = f'images/{model_name}/'
@@ -233,7 +255,14 @@ if __name__ == '__main__':
                                                              values_format=values_format)
     plt.title("Transformer Confusion Matrix")
     plt.savefig(plot_path + 'Transformercm.png')
-    plt.show()
+
+    # One-Class Nearest Neighbors evaluation
+    print("One-Class Nearest Neighbors:")
+    print(classification_report(y_test, pred_ocnn))
+    cm_ocnn = ConfusionMatrixDisplay.from_predictions(y_test, pred_ocnn, display_labels=["Non-Fraud", "Fraud"],
+                                                      values_format=values_format)
+    plt.title("One-Class Nearest Neighbors Confusion Matrix")
+    plt.savefig(plot_path + 'OCNNcm.png')
 
     plt.show()
 
@@ -268,6 +297,7 @@ if __name__ == '__main__':
     plot_precision_recall(y_test, pred_kmeans, 'K-Means')
     plot_precision_recall(y_test, pred_ae, 'Autoencoder')
     plot_precision_recall(y_test, preds_transformer, 'Transformer')
+    plot_precision_recall(y_test, pred_ocnn, 'One-Class Nearest Neighbors')
     plt.legend()
     plt.subplot(1, 2, 2)
     plot_roc(y_test, pred_if, 'Isolation Forest')
@@ -276,6 +306,7 @@ if __name__ == '__main__':
     plot_roc(y_test, pred_kmeans, 'K-Means')
     plot_roc(y_test, pred_ae, 'Autoencoder')
     plot_roc(y_test, preds_transformer, 'Transformer')
+    plot_roc(y_test, pred_ocnn, 'One-Class Nearest Neighbors')
     plt.legend()
     plt.tight_layout()
     plt.savefig(plot_path + 'PRAndRoc.png')

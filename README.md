@@ -543,6 +543,20 @@ Used dataset: https://www.unb.ca/cic/datasets/cic-unsw-nb15.html
 
 ---
 
+### One-Class Nearest Neighbors
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.82      | 0.98   | 0.90     | 71666   |
+| 1.0          | 0.67      | 0.17   | 0.27     | 17917   |
+| accuracy     |           |        | 0.82     | 89583   |
+| macro avg    | 0.75      | 0.57   | 0.58     | 89583   |
+| weighted avg | 0.79      | 0.82   | 0.77     | 89583   |
+
+![covariance matrix](images/cic-unsw-nb15/OCNNcm.png)
+
+---
+
 ### PR + ROC Curves
 
 ![PR+Roc.png](images/cic-unsw-nb15/PRAndRoc.png)
@@ -737,7 +751,9 @@ I made the live prediction chart work with the data generator.
 In this new version I switched to a line chart, to make the models easier to distinguish.  
 I indicate whether it's an anomaly or not by changing the color of the point (red for anomalies, green for benign data).  
 
-![Fixed live prediction chart](images/documentation/LiveMonitorPageFixed.png)
+![Fixed live prediction chart](images/documentation/LiveMonitorPageFixed.png)  
+
+I added a One-Class Nearest Neighbors model to the project, to test how it performs compared to the other models on high-dimensional data.  
 
 ### Next week's goals
 
