@@ -206,7 +206,7 @@ def generate_live_data():
     synthetic_x = synthetic_data.drop(columns=[label_column_name])
     original_class = synthetic_data[label_column_name].values[0]
     synthetic_x = synthetic_x.to_numpy()
-    original_class = int(original_class) if not math.isnan(original_class) else 0
+    original_class: int = round(original_class) if not math.isnan(original_class) else 0
     y = Series([original_class])
     selected_models = request.json.get('selected_models')
 
