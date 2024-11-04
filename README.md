@@ -757,7 +757,8 @@ I added a One-Class Nearest Neighbors model to the project, to test how it perfo
 
 ### Next week's goals
 
--
+- Look into how the very large bot detection dataset could be used with the current models
+- Find other architectures that work well with high-dimensional data
 
 ---
 
