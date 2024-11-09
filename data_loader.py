@@ -185,7 +185,7 @@ def ctgan_resample(train_data, y_train, target_column, random_state, desired_fra
     return x_train, y_train
 
 
-def get_ctgan_generator(x_train, y_train, epochs=100, model_name='cic-unsw-nb15'):
+def get_ctgan_generator(x_train, y_train, epochs=200, model_name='cic-unsw-nb15'):
     """
     Get a CTGAN generator for synthetic data generation.
 
@@ -208,7 +208,7 @@ def get_ctgan_generator(x_train, y_train, epochs=100, model_name='cic-unsw-nb15'
     # Add the y_train label column to x_train
     train_data = pd.concat([x_train, y_train], axis=1)
     metadata = Metadata.detect_from_dataframe(train_data)
-    ctgan = CTGANSynthesizer(metadata=metadata, epochs=epochs, verbose=True)
+    ctgan = CTGANSynthesizer(metadata=metadata, epochs=epochs, verbose=True, enforce_rounding=True, enforce_min_max_values=True)
     ctgan.fit(train_data)
     joblib.dump(ctgan, model_path)
     print(f"CTGAN training completed in {(datetime.now() - start_time).seconds} seconds, weights saved to {model_path}")
@@ -387,3 +387,7 @@ def create_classification_dataloaders(x_train, x_test, y_train, y_test, batch_si
     test_loader = create_classification_dataloader(x_test, y_test, batch_size, shuffle=False)
     return train_loader, test_loader
 
+
+if __name__ == '__main__':
+    X_train_scaled, X_test_scaled, Y_train, Y_test = load_cic_unsw_data(binary=True)
+    data_generator = get_ctgan_generator(X_train_scaled, Y_train, model_name='cic-unsw-nb15')
