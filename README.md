@@ -774,6 +774,18 @@ Trained a new CTGAN model, to generate more accurate synthetic data for the CIC-
 
 ---
 
+## 11. Week
+
+### Progress
+
+Tried to convert the bot detection dataset into a usable format unsuccessfully.
+
+### Next week's goals
+
+- Convert bot detection dataset into a format that can be used with the current models, also only use around 0.1% of the data, so that the model can be trained in a reasonable amount of time.
+
+---
+
 
 ## Sources / References
 - https://medium.com/@reza.shokrzad/6-pivotal-anomaly-detection-methods-from-foundations-to-2023s-best-practices-5f037b530ae6
