@@ -13,6 +13,7 @@ __pycache__/
 data/**/*.csv
 data/**/*.zip
 data/**/*.pkl
+data/**/*.txt
 models/**/*.pkl
 models/**/*.zip
 models/**/*.rar
