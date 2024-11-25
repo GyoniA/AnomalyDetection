@@ -6,9 +6,10 @@ import numpy as np
 import pandas as pd
 import torch
 from sdv.metadata import Metadata
+from sklearn.feature_extraction.text import HashingVectorizer
 from sklearn.impute import SimpleImputer
-from sklearn.model_selection import StratifiedShuffleSplit
-from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import StratifiedShuffleSplit, train_test_split
+from sklearn.preprocessing import StandardScaler, LabelEncoder, MinMaxScaler
 from torch.utils.data import TensorDataset, DataLoader
 from imblearn.combine import SMOTEENN
 from sdv.single_table import CTGANSynthesizer
@@ -327,6 +328,82 @@ def load_cic_unsw_data(data_path="data/cic-unsw-nb15/Data.csv", labels_path="dat
     print(f"Data loaded and processed in {(datetime.now() - start_time).seconds} seconds")
 
     return x_train, x_test, y_train, y_test
+
+
+def load_bot_detection_data(data_path="data/bot-detection/bot.txt", random_state=0, test_size=0.2):
+    """
+    Load and preprocess the "Bot Detection" dataset
+
+    :param data_path: Path to the data file
+    :param random_state: The random state to use
+    :param test_size: Proportion of the dataset to reserve for testing
+    :return: Preprocessed training and test sets (scaled), along with labels
+    """
+    start_time = datetime.now()
+    print("Loading Bot Detection dataset...")
+    # Dataset is in the format: TIMESTAMP IP_ADDRESS IP_COUNTRY QUERY_TYPE SERVER_RESPONSE_CODE URL DOMAIN_ID AGENT_ID BOT_FLAG
+    # Where BOT_FLAG is + for bot and doesn't exist for non-bot
+    df = pd.read_csv(data_path, sep="\t", header=None, names= [
+            "timestamp", "ip_address", "ip_country", "query_type", "server_response_code",
+            "url", "domain_id", "agent_id", "bot_flag"
+        ]
+    )
+
+    # Convert timestamp to 6 columns: year, month, day, hour, minute, second as integers
+    # Timestamp is in the format: YYYY-MM-DD HH:MM:SS, so it needs to be split with the space
+    df["date"] = df["timestamp"].str.split(" ").str[0]
+    df["time"] = df["timestamp"].str.split(" ").str[1]
+    df["split"] = df["date"].str.split("-")
+    df["year"] = df["split"].str[0]
+    df["month"] = df["split"].str[1]
+    df["day"] = df["split"].str[2]
+    df["split"] = df["time"].str.split(":")
+    df["hour"] = df["split"].str[0]
+    df["minute"] = df["split"].str[1]
+    df["second"] = df["split"].str[2]
+
+    df.drop(columns=["timestamp", "date", "time", "split"], inplace=True)
+
+    # Split IP address into four parts
+    df[["ip_part1", "ip_part2", "ip_part3", "ip_part4"]] = df["ip_address"].str.split(".", expand=True).astype(int)
+    df.drop(columns=["ip_address"], inplace=True)
+
+    # Encode categorical features (e.g., country, query type)
+    le_country = LabelEncoder() # TODO: Make this independent of the dataset
+    df["ip_country"] = le_country.fit_transform(df["ip_country"])
+
+    le_query = LabelEncoder() # TODO: Make this independent of the dataset
+    df["query_type"] = le_query.fit_transform(df["query_type"])
+
+    # Process the 'url' column using hashing vectorizer
+    df["url"] = df["url"].fillna("") # Replace NaN values with empty strings
+    vectorizer = HashingVectorizer(n_features=20, alternate_sign=False)
+    url_vectors = pd.DataFrame(vectorizer.fit_transform(df["url"]).toarray())
+    url_vectors.columns = [f"url_feat_{i}" for i in range(url_vectors.shape[1])]
+    df = pd.concat([df.reset_index(drop=True), url_vectors], axis=1)
+    df.drop(columns=["url"], inplace=True)
+
+    # Convert bot_flag into binary labels as int (it can be + or NaN)
+    df["bot_flag"] = df["bot_flag"].apply(lambda it: 1 if it == "+" else 0)
+
+    # Split features and labels
+    x = df.drop(columns=["bot_flag", "agent_id"])  # Drop agent_id to avoid overfitting
+    y = df["bot_flag"]
+
+    # Scale numerical features
+    scaler = MinMaxScaler()
+    x_scaled = pd.DataFrame(scaler.fit_transform(x), columns=x.columns)
+
+    # Split into training and testing sets
+    x_train, x_test, y_train, y_test = train_test_split(
+        x_scaled, y, test_size=test_size, random_state=random_state, stratify=y
+    )
+
+    print(f"Dataset loaded and preprocessed in {(datetime.now() - start_time).seconds} seconds.")
+    return x_train, x_test, y_train, y_test, le_country, le_query
+
+
+
 
 
 def create_dataloader(x, batch_size=64, shuffle=True, use_gpu=False):

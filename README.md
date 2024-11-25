@@ -563,6 +563,46 @@ Used dataset: https://www.unb.ca/cic/datasets/cic-unsw-nb15.html
 
 ---
 
+## On bot detection dataset
+
+### Random Forest
+
+Train time: ~1034 seconds ( ~17 minutes)
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 1.00      | 1.00   | 1.00     | 1193508 |
+| 1.0          | 1.00      | 1.00   | 1.00     | 309418  |
+| accuracy     |           |        | 1.00     | 1502926 |
+| macro avg    | 1.00      | 1.00   | 1.00     | 1502926 |
+| weighted avg | 1.00      | 1.00   | 1.00     | 1502926 |
+
+![covariance matrix](images/bot-detection/RFcm.png)
+
+---
+
+### XGBoost
+
+Train time: ~20 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.99      | 1.00   | 0.99     | 1193508 |
+| 1.0          | 0.99      | 0.96   | 0.97     | 309418  |
+| accuracy     |           |        | 0.99     | 1502926 |
+| macro avg    | 0.99      | 0.98   | 0.98     | 1502926 |
+| weighted avg | 0.99      | 0.99   | 0.99     | 1502926 |
+
+![covariance matrix](images/bot-detection/XGBcm.png)
+
+---
+
+### PR + ROC Curves
+
+![PR+Roc.png](images/bot-detection/PRAndRoc.png)
+
+---
+
 ## 1. Week
 
 ### Progress
@@ -793,6 +833,7 @@ Tried to convert the bot detection dataset into a usable format unsuccessfully.
 Added presentation for my progress since the 6th week.  
 Started working on the bot detection dataset, but it needs new models, as it has text columns (URL) which doesn't work with my current models.  
 I started converting my transformer model so that it works with text input as well.
+I added a Random Forest and an XGBoost model to the project, as these models work with text input, and compared them on the bot detection dataset.
 
 ### Next week's goals
 

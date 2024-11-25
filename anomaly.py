@@ -25,6 +25,31 @@ model_name = 'cic-unsw-nb15' # TODO: Move these to a config file
 model_path = f'models/{model_name}/'
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+
+def plot_precision_recall(y_tests, pred, model):
+    """
+    Plot Precision-Recall curves and compute AUPRC.
+    """
+    precision, recall, _ = precision_recall_curve(y_tests, pred)
+    pr_auc = auc(recall, precision)
+    plt.plot(recall, precision, marker='.', label=f'{model} AUPRC = {pr_auc:.2f}')
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve')
+
+
+def plot_roc(y_tests, pred, model):
+    """
+    Plot ROC curves
+    """
+    fpr, tpr, _ = roc_curve(y_tests, pred)
+    roc_auc = auc(fpr, tpr)
+    plt.plot(fpr, tpr, label=f'{model} AUC = {roc_auc:.2f}')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve')
+
+
 if __name__ == '__main__':
     # X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_pointe77_data()
     # X_train_scaled, X_test_scaled, y_train, y_test = data_loader.load_mlg_ulb_data(resampling=None)
@@ -265,28 +290,6 @@ if __name__ == '__main__':
     plt.savefig(plot_path + 'OCNNcm.png')
 
     plt.show()
-
-    def plot_precision_recall(y_tests, pred, model):
-        """
-        Plot Precision-Recall curves and compute AUPRC.
-        """
-        precision, recall, _ = precision_recall_curve(y_tests, pred)
-        pr_auc = auc(recall, precision)
-        plt.plot(recall, precision, marker='.', label=f'{model} AUPRC = {pr_auc:.2f}')
-        plt.xlabel('Recall')
-        plt.ylabel('Precision')
-        plt.title('Precision-Recall Curve')
-
-    def plot_roc(y_tests, pred, model):
-        """
-        Plot ROC curves
-        """
-        fpr, tpr, _ = roc_curve(y_tests, pred)
-        roc_auc = auc(fpr, tpr)
-        plt.plot(fpr, tpr, label=f'{model} AUC = {roc_auc:.2f}')
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('ROC Curve')
 
     # Plot precision-recall and ROC for each model
     plt.figure(figsize=(12, 5))
