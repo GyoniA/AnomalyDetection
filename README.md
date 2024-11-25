@@ -786,6 +786,21 @@ Tried to convert the bot detection dataset into a usable format unsuccessfully.
 
 ---
 
+## 12. Week
+
+### Progress
+
+Added presentation for my progress since the 6th week.  
+Started working on the bot detection dataset, but it needs new models, as it has text columns (URL) which doesn't work with my current models.  
+I started converting my transformer model so that it works with text input as well.
+
+### Next week's goals
+
+- Make transformer model work with text input
+- Add other new models that can work with text input
+
+---
+
 
 ## Sources / References
 - https://medium.com/@reza.shokrzad/6-pivotal-anomaly-detection-methods-from-foundations-to-2023s-best-practices-5f037b530ae6
