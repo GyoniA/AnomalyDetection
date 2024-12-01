@@ -842,6 +842,18 @@ I added a Random Forest and an XGBoost model to the project, as these models wor
 
 ---
 
+## 13. Week
+
+### Progress
+
+I added a K-NN model to the project, as it works with text input and is a simple model that can be used for comparison with the other models. This model takes a very long time to predict, so long, that it didn't finish prediction on the test dataset in the couple of hours that I ran it.
+
+### Next week's goals
+
+- 
+
+---
+
 
 ## Sources / References
 - https://medium.com/@reza.shokrzad/6-pivotal-anomaly-detection-methods-from-foundations-to-2023s-best-practices-5f037b530ae6

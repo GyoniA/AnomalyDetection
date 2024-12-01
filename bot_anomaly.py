@@ -7,6 +7,7 @@ import torch
 import xgboost
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, ConfusionMatrixDisplay
+from sklearn.neighbors import KNeighborsClassifier
 
 import data_loader
 from anomaly import plot_precision_recall, plot_roc
@@ -54,6 +55,24 @@ if __name__ == '__main__':
         print(f"XGBoost training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
     pred_xgb = xgb.predict(X_test_scaled)
 
+    start_time = datetime.now()
+    # 3. K-Nearest Neighbors
+    KNN_model_path = model_path + 'knn.pkl'
+    if os.path.exists(KNN_model_path):
+        print(f"\nLoading K-NN from {KNN_model_path}...")
+        knn = joblib.load(KNN_model_path)
+        print(f"K-NN loaded in {(datetime.now() - start_time).seconds} seconds")
+    else:
+        print("\nTraining K-NN model...")
+        knn = KNeighborsClassifier(n_neighbors=3, weights='distance', metric='minkowski',
+                                   p=2, algorithm='ball_tree', leaf_size=20)
+        knn.fit(X_train_scaled, y_train)
+        joblib.dump(knn, KNN_model_path)
+        print(f"K-NN model training completed in {(datetime.now() - start_time).seconds} seconds, predicting...")
+    start_time = datetime.now()
+    pred_knn = knn.predict(X_test_scaled)
+    print(f"K-NN prediction completed in {(datetime.now() - start_time).seconds} seconds")
+
     values_format = "d"  # The number format to use for the confusion matrix values
     print("\n--- Evaluation Results ---\n")
     plot_path = f'images/{model_name}/'
@@ -73,6 +92,14 @@ if __name__ == '__main__':
     plt.title("XGBoost Confusion Matrix")
     plt.savefig(plot_path + 'XGBcm.png')
 
+    # K-NN evaluation
+    print("K-NN:")
+    print(classification_report(y_test, pred_knn))
+    cm_knn = ConfusionMatrixDisplay.from_predictions(y_test, pred_knn, display_labels=["Non-Fraud", "Fraud"],
+                                                    values_format=values_format)
+    plt.title("K-NN Confusion Matrix")
+    plt.savefig(plot_path + 'KNNcm.png')
+
     plt.show()
 
     # Plot precision-recall and ROC for each model
@@ -80,10 +107,12 @@ if __name__ == '__main__':
     plt.subplot(1, 2, 1)
     plot_precision_recall(y_test, pred_rf, 'Random Forest')
     plot_precision_recall(y_test, pred_xgb, 'XGBoost')
+    plot_precision_recall(y_test, pred_knn, 'K-NN')
     plt.legend()
     plt.subplot(1, 2, 2)
     plot_roc(y_test, pred_rf, 'Random Forest')
     plot_roc(y_test, pred_xgb, 'XGBoost')
+    plot_roc(y_test, pred_knn, 'K-NN')
     plt.legend()
     plt.tight_layout()
     plt.savefig(plot_path + 'PRAndRoc.png')
