@@ -354,13 +354,13 @@ def load_bot_detection_data(data_path="data/bot-detection/bot.txt", random_state
     df["date"] = df["timestamp"].str.split(" ").str[0]
     df["time"] = df["timestamp"].str.split(" ").str[1]
     df["split"] = df["date"].str.split("-")
-    df["year"] = df["split"].str[0]
-    df["month"] = df["split"].str[1]
-    df["day"] = df["split"].str[2]
+    df["year"] = df["split"].str[0].astype(int)
+    df["month"] = df["split"].str[1].astype(int)
+    df["day"] = df["split"].str[2].astype(int)
     df["split"] = df["time"].str.split(":")
-    df["hour"] = df["split"].str[0]
-    df["minute"] = df["split"].str[1]
-    df["second"] = df["split"].str[2]
+    df["hour"] = df["split"].str[0].astype(int)
+    df["minute"] = df["split"].str[1].astype(int)
+    df["second"] = df["split"].str[2].astype(int)
 
     df.drop(columns=["timestamp", "date", "time", "split"], inplace=True)
 
@@ -406,11 +406,11 @@ def load_bot_detection_data(data_path="data/bot-detection/bot.txt", random_state
 
 
 
-def create_dataloader(x, batch_size=64, shuffle=True, use_gpu=False):
+def create_dataloader(x: np.ndarray, batch_size=64, shuffle=True, use_gpu=False):
     """
     Convert NumPy array to PyTorch tensor and then to DataLoader
 
-    :param x: Features
+    :param x: Features (numpy ndarray)
     :param batch_size: Batch size for the DataLoader
     :param shuffle: Whether to shuffle the data (Should be true for Train and False for Test)
     :param use_gpu: Whether to use GPU for training
@@ -449,14 +449,14 @@ def create_classification_dataloader(x, y: pd.Series, batch_size=64, shuffle=Tru
     return dataloader
 
 
-def create_classification_dataloaders(x_train, x_test, y_train, y_test, batch_size=64):
+def create_classification_dataloaders(x_train: np.ndarray, x_test: np.ndarray, y_train: pd.Series, y_test: pd.Series, batch_size=64):
     """
     Convert NumPy arrays to PyTorch tensors and then to DataLoaders for classification.
 
-    :param x_train: Training features
-    :param x_test: Test features
-    :param y_train: Training labels
-    :param y_test: Test labels
+    :param x_train: Training features (numpy ndarray)
+    :param x_test: Test features (numpy ndarray)
+    :param y_train: Training labels (Pandas Series)
+    :param y_test: Test labels (Pandas Series)
     :param batch_size: Batch size for DataLoaders
     :return: Training and test DataLoaders
     """

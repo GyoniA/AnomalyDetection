@@ -597,6 +597,70 @@ Train time: ~20 seconds
 
 ---
 
+### Transformer
+
+Train time: ~4454 seconds ( ~74 minutes)
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.99      | 1.00   | 0.99     | 1193508 |
+| 1.0          | 0.97      | 0.98   | 0.98     | 309418  |
+| accuracy     |           |        | 0.99     | 1502926 |
+| macro avg    | 0.98      | 0.99   | 0.99     | 1502926 |
+| weighted avg | 0.99      | 0.99   | 0.99     | 1502926 |
+
+![covariance matrix](images/bot-detection/Transformercm.png)
+
+---
+
+### Isolation Forest
+
+Train time: ~3 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.79      | 0.79   | 0.79     | 1193508 |
+| 1.0          | 0.19      | 0.19   | 0.19     | 309418  |
+| accuracy     |           |        | 0.67     | 1502926 |
+| macro avg    | 0.49      | 0.49   | 0.49     | 1502926 |
+| weighted avg | 0.67      | 0.67   | 0.67     | 1502926 |
+
+![covariance matrix](images/bot-detection/IsolationForestcm.png)
+
+---
+
+### K-Means
+
+Train time: ~9 seconds
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.89      | 0.13   | 0.23     | 1193508 |
+| 1.0          | 0.22      | 0.94   | 0.36     | 309418  |
+| accuracy     |           |        | 0.30     | 1502926 |
+| macro avg    | 0.56      | 0.54   | 0.29     | 1502926 |
+| weighted avg | 0.75      | 0.30   | 0.26     | 1502926 |
+
+![covariance matrix](images/bot-detection/Kmeanscm.png)
+
+---
+
+### Autoencoder
+
+Train time: ~3567 seconds ( ~59 minutes)
+
+|              | precision | recall | f1-score | support |
+|--------------|-----------|--------|----------|---------|
+| 0.0          | 0.80      | 0.96   | 0.87     | 1193508 |
+| 1.0          | 0.37      | 0.09   | 0.14     | 309418  |
+| accuracy     |           |        | 0.78     | 1502926 |
+| macro avg    | 0.59      | 0.52   | 0.51     | 1502926 |
+| weighted avg | 0.71      | 0.78   | 0.72     | 1502926 |
+
+![covariance matrix](images/bot-detection/Autoencodercm.png)
+
+---
+
 ### PR + ROC Curves
 
 ![PR+Roc.png](images/bot-detection/PRAndRoc.png)
@@ -846,11 +910,12 @@ I added a Random Forest and an XGBoost model to the project, as these models wor
 
 ### Progress
 
-I added a K-NN model to the project, as it works with text input and is a simple model that can be used for comparison with the other models. This model takes a very long time to predict, so long, that it didn't finish prediction on the test dataset in the couple of hours that I ran it.
+I added a K-NN model to the project, as it works with text input and is a simple model that can be used for comparison with the other models. This model takes a very long time to predict, so long, that it didn't finish prediction on the test dataset in the couple of hours that I ran it.  
+I also made it so the Transformer, Isolation Forest and Autoencoder models work with the bot detection dataset, and compared them to the other models.
 
 ### Next week's goals
 
-- 
+- Add presentation that covers my progress on the project
 
 ---
 
